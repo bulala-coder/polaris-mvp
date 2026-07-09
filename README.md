@@ -1,6 +1,33 @@
 # Polaris 北極星
 
-Polaris is a long-term investment decision system prototype.
+## Current Version
+
+v0.1.7
+
+## Live Demo
+
+https://polaris-mvp-theta.vercel.app
+
+## Repository
+
+https://github.com/bulala-coder/polaris-mvp
+
+## Description
+
+Polaris is a frontend-only prototype of a long-term investment decision system.
+It helps users review daily decisions, portfolio allocation, market risk context, and investment discipline.
+
+## Product Principle
+
+Polaris does not predict the market. It helps users make calmer, more consistent, and more explainable long-term investment decisions.
+
+## Current Pages
+
+- Today: daily decision dashboard
+- Portfolio: allocation, drift, and effective exposure review
+- Market: market risk context and interpretation
+- Journal: decision reflection and emotional discipline
+- Settings: product boundaries, data status, and disclaimer
 
 ## Tech Stack
 
@@ -8,22 +35,23 @@ Polaris is a long-term investment decision system prototype.
 - Vite
 - TypeScript
 - Tailwind CSS
+- React Router
+- Vercel
 
-## Current Version
+## Current Status
 
-v0.1.1 frontend-only prototype
-
-## Features
-
-- Today decision dashboard
-- Portfolio mock data display
-- Market risk mock data display
-- Journal mock display
-- Settings and prototype notice
+- Frontend-only prototype
+- Mock portfolio data
+- Mock market risk data
+- Mock journal display
+- No login
+- No database
+- No brokerage connection
+- No financial API
 
 ## Disclaimer
 
-This project does not provide financial advice, stock recommendations, short-term trading signals, or guaranteed investment outcomes.
+Polaris does not provide financial advice, stock recommendations, short-term trading signals, market predictions, or guaranteed investment outcomes.
 
 ## Local Development
 

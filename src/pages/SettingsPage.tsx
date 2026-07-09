@@ -28,7 +28,7 @@ const dataStatusItems = [
 ]
 
 const prototypeLimitItems = [
-  'v0.1.6 目前只展示產品流程與 UI',
+  'v0.1.7 目前只展示產品流程與 UI',
   '尚未支援真實資料輸入',
   '尚未支援帳號登入',
   '尚未支援資料儲存',
@@ -81,7 +81,7 @@ function SettingsPage() {
           <SettingsInfoCard
             description="目前產品與技術版本。"
             items={[
-              'Polaris v0.1.6',
+              'Polaris v0.1.7',
               'Frontend-only prototype',
               'React + Vite + TypeScript + Tailwind CSS',
               'Deployment：Vercel',

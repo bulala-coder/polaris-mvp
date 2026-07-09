@@ -24,6 +24,9 @@ function formatDrift(drift: number) {
 }
 
 function PortfolioAssetCard({ asset }: PortfolioAssetCardProps) {
+  const currentWeight = asset.currentWeight ?? 0
+  const drift = asset.drift ?? 0
+
   const details = [
     {
       label: '目前市值',
@@ -31,7 +34,7 @@ function PortfolioAssetCard({ asset }: PortfolioAssetCardProps) {
     },
     {
       label: '目前比例',
-      value: percentFormatter.format(asset.currentWeight),
+      value: percentFormatter.format(currentWeight),
     },
     {
       label: '目標比例',
@@ -39,7 +42,7 @@ function PortfolioAssetCard({ asset }: PortfolioAssetCardProps) {
     },
     {
       label: '偏離',
-      value: formatDrift(asset.drift),
+      value: formatDrift(drift),
     },
     {
       label: '曝險倍數',

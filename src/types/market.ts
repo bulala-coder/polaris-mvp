@@ -1,6 +1,8 @@
 export type MarketRiskLevel = 1 | 2 | 3 | 4 | 5
 
-export type MarketDataConfidenceLevel = 'low' | 'medium' | 'high'
+export type DataConfidenceLevel = 'low' | 'medium' | 'high'
+
+export type MarketDataConfidenceLevel = DataConfidenceLevel
 
 export type MarketCategoryScoreKey =
   | 'valuation'
@@ -14,12 +16,14 @@ export type MarketCategoryScoreKey =
 export type MarketCategoryScore = {
   key: MarketCategoryScoreKey
   label: string
+  value: number
+  helperText: string
   description: string
   score: number
   weight: number
 }
 
-export type MarketScore = {
+export type MarketInput = {
   valuationScore: number
   momentumScore: number
   volatilityScore: number
@@ -27,10 +31,14 @@ export type MarketScore = {
   businessCycleScore: number
   creditRiskScore: number
   sentimentScore: number
-  dataConfidenceLevel: MarketDataConfidenceLevel
+  dataConfidenceLevel: DataConfidenceLevel
+}
+
+export type MarketScore = MarketInput & {
   marketRiskScore: number
   marketRiskLevel: MarketRiskLevel
-  marketRiskLabel: string
+  dataConfidenceLevel: DataConfidenceLevel
   categoryScores: MarketCategoryScore[]
   mainRiskDrivers: MarketCategoryScore[]
+  marketRiskLabel: string
 }

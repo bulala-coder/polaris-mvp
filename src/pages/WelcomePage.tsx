@@ -42,6 +42,15 @@ function WelcomePage() {
           >
             查看今日決策
           </Link>
+
+          <div className="mt-6 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400 shadow-xl shadow-black/20 backdrop-blur">
+            <p className="font-semibold text-slate-200">
+              Polaris v0.1 是 frontend-only prototype。
+            </p>
+            <p className="mt-2">
+              它用於展示長期投資決策流程，不提供個股推薦、短線交易訊號或保證獲利建議。
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr] lg:items-stretch">

@@ -26,9 +26,12 @@ const settingsSections = [
     title: 'Prototype Notice',
     description: '這個版本專注於前端流程與資訊架構驗證。',
     items: [
-      'v0.1 是本機 prototype',
-      '目前不連接真實券商或金融資料 API',
-      '不提供個股推薦、短線交易訊號或保證獲利建議',
+      '目前資料皆為 mock data',
+      '不連接券商帳戶',
+      '不讀取真實金融資料 API',
+      '不提供個股推薦',
+      '不提供短線買賣訊號',
+      '不保證投資結果',
     ],
   },
   {

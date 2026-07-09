@@ -20,6 +20,18 @@ function TodayPage() {
         </div>
 
         <HeroDecisionCard decision={mockDailyDecision} />
+
+        <section className="mt-5 rounded-lg border border-white/10 bg-slate-950/60 p-5 text-sm leading-relaxed text-slate-400 shadow-xl shadow-black/20 backdrop-blur">
+          <h2 className="text-base font-semibold text-slate-100">
+            Trust Notice
+          </h2>
+          <p className="mt-3">
+            Polaris 的輸出是根據 mock 投資組合與 mock 市場風險資料產生。
+          </p>
+          <p className="mt-2">
+            目前版本僅供產品原型展示，不應作為真實投資操作依據。
+          </p>
+        </section>
       </PageContainer>
     </AppShell>
   )

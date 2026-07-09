@@ -5,6 +5,7 @@ import type {
   MarketScore,
 } from '../types/market'
 import type { Portfolio, PortfolioAsset } from '../types/portfolio'
+import type { ReflectionEntry } from '../types/reflection'
 
 export const mockDailyDecision: DailyDecision = {
   decisionLabel: '維持策略',
@@ -194,3 +195,20 @@ export const mockMarketScore: MarketScore = {
     .sort((first, second) => second.score - first.score)
     .slice(0, 3),
 }
+
+export const mockReflectionEntries: ReflectionEntry[] = [
+  {
+    date: '2026-07-09',
+    decisionLabel: '維持策略',
+    emotion: 'calm',
+    followedStrategy: true,
+    note: '今天沒有因為市場新聞而改變策略。',
+  },
+  {
+    date: '2026-07-08',
+    decisionLabel: '用新資金微調',
+    emotion: 'anxious',
+    followedStrategy: true,
+    note: '有點擔心波動，但仍按照原本計畫調整。',
+  },
+]

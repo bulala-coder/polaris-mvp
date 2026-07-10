@@ -63,8 +63,8 @@ function PortfolioEditor({ assets, onAssetsChange }: PortfolioEditorProps) {
           Edit Portfolio
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
-          v0.2.1 allows temporary editing only. Data will reset after refresh
-          until localStorage is added in a later version.
+          Portfolio changes are saved in this browser using localStorage. Use
+          Reset demo data to restore the original demo portfolio.
         </p>
       </div>
 

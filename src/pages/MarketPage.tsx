@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
 import CategoryScoreList from '../components/market/CategoryScoreList'
@@ -9,6 +9,12 @@ import MarketNoteBox from '../components/market/MarketNoteBox'
 import MarketRiskSummaryCard from '../components/market/MarketRiskSummaryCard'
 import { mockMarketInput } from '../data/mockData'
 import { buildMarketScore } from '../utils/marketCalculations'
+import {
+  readFromStorage,
+  removeFromStorage,
+  storageKeys,
+  writeToStorage,
+} from '../utils/storage'
 
 const interpretationItems = [
   '目前市場風險處於中性偏高，代表需要提高紀律，但不代表必須立即退出市場。',
@@ -27,11 +33,23 @@ function formatConfidenceLevel(value: string) {
 }
 
 function MarketPage() {
-  const [marketInput, setMarketInput] = useState({ ...mockMarketInput })
+  const skipNextStorageWrite = useRef(false)
+  const [marketInput, setMarketInput] = useState(() =>
+    readFromStorage(storageKeys.marketInput, { ...mockMarketInput }),
+  )
   const marketScore = useMemo(
     () => buildMarketScore(marketInput),
     [marketInput],
   )
+
+  useEffect(() => {
+    if (skipNextStorageWrite.current) {
+      skipNextStorageWrite.current = false
+      return
+    }
+
+    writeToStorage(storageKeys.marketInput, marketInput)
+  }, [marketInput])
 
   const topDriver = marketScore.mainRiskDrivers[0]
 
@@ -102,7 +120,11 @@ function MarketPage() {
             />
             <button
               className="justify-self-start rounded-lg border border-cyan-200/30 bg-cyan-200/10 px-5 py-3 text-base font-semibold text-cyan-50 shadow-[0_0_32px_rgba(34,211,238,0.12)] transition hover:border-cyan-100/60 hover:bg-cyan-200/15 focus:outline-none focus:ring-2 focus:ring-cyan-200/70"
-              onClick={() => setMarketInput({ ...mockMarketInput })}
+              onClick={() => {
+                removeFromStorage(storageKeys.marketInput)
+                skipNextStorageWrite.current = true
+                setMarketInput({ ...mockMarketInput })
+              }}
               type="button"
             >
               Reset demo market data

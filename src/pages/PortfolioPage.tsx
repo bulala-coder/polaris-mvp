@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
 import PortfolioAssetCard from '../components/portfolio/PortfolioAssetCard'
@@ -8,6 +8,12 @@ import PortfolioNoteBox from '../components/portfolio/PortfolioNoteBox'
 import PortfolioSummaryCard from '../components/portfolio/PortfolioSummaryCard'
 import { mockPortfolio } from '../data/mockData'
 import { calculatePortfolioMetrics } from '../utils/portfolioCalculations'
+import {
+  readFromStorage,
+  removeFromStorage,
+  storageKeys,
+  writeToStorage,
+} from '../utils/storage'
 
 const currencyFormatter = new Intl.NumberFormat('zh-TW', {
   style: 'currency',
@@ -37,8 +43,20 @@ function cloneDemoAssets() {
 }
 
 function PortfolioPage() {
-  const [assets, setAssets] = useState(cloneDemoAssets)
+  const skipNextStorageWrite = useRef(false)
+  const [assets, setAssets] = useState(() =>
+    readFromStorage(storageKeys.portfolioAssets, cloneDemoAssets()),
+  )
   const portfolio = useMemo(() => calculatePortfolioMetrics(assets), [assets])
+
+  useEffect(() => {
+    if (skipNextStorageWrite.current) {
+      skipNextStorageWrite.current = false
+      return
+    }
+
+    writeToStorage(storageKeys.portfolioAssets, assets)
+  }, [assets])
 
   const insightItems = [
     {
@@ -106,7 +124,11 @@ function PortfolioPage() {
             <PortfolioEditor assets={assets} onAssetsChange={setAssets} />
             <button
               className="justify-self-start rounded-lg border border-cyan-200/30 bg-cyan-200/10 px-5 py-3 text-base font-semibold text-cyan-50 shadow-[0_0_32px_rgba(34,211,238,0.12)] transition hover:border-cyan-100/60 hover:bg-cyan-200/15 focus:outline-none focus:ring-2 focus:ring-cyan-200/70"
-              onClick={() => setAssets(cloneDemoAssets())}
+              onClick={() => {
+                removeFromStorage(storageKeys.portfolioAssets)
+                skipNextStorageWrite.current = true
+                setAssets(cloneDemoAssets())
+              }}
               type="button"
             >
               Reset demo data

@@ -78,8 +78,8 @@ function MarketEditor({
           Edit Market Data
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
-          v0.2.2 allows temporary market data editing only. Data will reset
-          after refresh until localStorage is added in a later version.
+          Market changes are saved in this browser using localStorage. Use Reset
+          demo market data to restore the original demo market input.
         </p>
       </div>
 

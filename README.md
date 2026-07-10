@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.2.4
+v0.2.5
 
 ## Live Demo
 
@@ -47,6 +47,7 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Editable portfolio with localStorage
 - Editable market data with localStorage
 - User Position settings with localStorage
+- Decision Engine v0.2
 - No login
 - No database
 - No brokerage connection

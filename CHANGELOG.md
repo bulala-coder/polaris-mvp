@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.5 - Decision Engine v0.2
+- Added user risk capacity calculation
+- Added local prototype decision engine
+- Updated Today page to generate decisions from Portfolio, Market, and User Position
+- Added recommended actions to Today decision output
+
 ## v0.2.4 - User Position Settings
 - Added User Position settings to Settings page
 - Added localStorage persistence for User Position

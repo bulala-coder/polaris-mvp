@@ -1,9 +1,17 @@
 import type { ReactNode } from 'react'
 import type { DailyDecision } from '../../types/decision'
+import type { DecisionRiskLevel } from '../../types/decisionOutput'
 import RiskLevelBadge from './RiskLevelBadge'
 
 type HeroDecisionCardProps = {
   decision: DailyDecision
+  decisionLabel?: string
+  riskLevel?: DecisionRiskLevel
+  riskLabel?: string
+  summary?: string
+  portfolioStatus?: string
+  recommendedAction?: ReactNode
+  notRecommendedAction?: ReactNode
 }
 
 type DecisionItem = {
@@ -11,13 +19,41 @@ type DecisionItem = {
   value: ReactNode
 }
 
-function HeroDecisionCard({ decision }: HeroDecisionCardProps) {
+function HeroDecisionCard({
+  decision,
+  decisionLabel,
+  riskLevel,
+  riskLabel,
+  summary,
+  portfolioStatus,
+  recommendedAction,
+  notRecommendedAction,
+}: HeroDecisionCardProps) {
   const decisionItems: DecisionItem[] = [
-    { label: '今日結論', value: decision.decisionLabel },
-    { label: '市場風險', value: <RiskLevelBadge decision={decision} /> },
-    { label: '投資組合狀態', value: decision.portfolioStatus },
-    { label: '建議行動', value: decision.recommendedAction },
-    { label: '不建議', value: decision.notRecommendedAction },
+    { label: '今日結論', value: decisionLabel ?? decision.decisionLabel },
+    {
+      label: '市場風險',
+      value:
+        riskLevel && riskLabel ? (
+          <span className="inline-flex rounded-full border border-cyan-200/20 bg-cyan-200/10 px-3 py-1 text-sm font-semibold text-cyan-100">
+            Level {riskLevel}｜{riskLabel}
+          </span>
+        ) : (
+          <RiskLevelBadge decision={decision} />
+        ),
+    },
+    {
+      label: '投資組合狀態',
+      value: portfolioStatus ?? decision.portfolioStatus,
+    },
+    {
+      label: '建議行動',
+      value: recommendedAction ?? decision.recommendedAction,
+    },
+    {
+      label: '不建議',
+      value: notRecommendedAction ?? decision.notRecommendedAction,
+    },
   ]
 
   return (
@@ -35,7 +71,7 @@ function HeroDecisionCard({ decision }: HeroDecisionCardProps) {
       </div>
 
       <p className="mb-2 text-lg font-medium text-cyan-100">
-        {decision.decisionSummary}
+        {summary ?? decision.decisionSummary}
       </p>
 
       <dl className="divide-y divide-white/10">

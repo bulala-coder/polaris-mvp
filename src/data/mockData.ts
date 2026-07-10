@@ -56,7 +56,7 @@ const portfolioAssetInputs: PortfolioAsset[] = [
 
 export const mockPortfolio = calculatePortfolioMetrics(portfolioAssetInputs)
 
-const marketInput: MarketInput = {
+export const mockMarketInput: MarketInput = {
   valuationScore: 70,
   momentumScore: 55,
   volatilityScore: 65,
@@ -67,7 +67,7 @@ const marketInput: MarketInput = {
   dataConfidenceLevel: 'medium',
 }
 
-export const mockMarketScore = buildMarketScore(marketInput)
+export const mockMarketScore = buildMarketScore(mockMarketInput)
 
 export const mockReflectionEntries: ReflectionEntry[] = [
   {

@@ -1,28 +1,24 @@
+import { useMemo, useState } from 'react'
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
 import PortfolioAssetCard from '../components/portfolio/PortfolioAssetCard'
+import PortfolioEditor from '../components/portfolio/PortfolioEditor'
 import PortfolioInsightCard from '../components/portfolio/PortfolioInsightCard'
 import PortfolioNoteBox from '../components/portfolio/PortfolioNoteBox'
 import PortfolioSummaryCard from '../components/portfolio/PortfolioSummaryCard'
 import { mockPortfolio } from '../data/mockData'
+import { calculatePortfolioMetrics } from '../utils/portfolioCalculations'
 
-const insightItems = [
-  {
-    label: 'Total Value',
-    value: 'NT$20,000,000',
-    helperText: '目前 mock portfolio 的總資產規模。',
-  },
-  {
-    label: 'Effective Exposure',
-    value: '約 123%',
-    helperText: '納入槓桿與低曝險資產後的整體曝險概念。',
-  },
-  {
-    label: 'Total Drift',
-    value: '輕微偏離',
-    helperText: '用來觀察目前配置與目標配置的距離。',
-  },
-]
+const currencyFormatter = new Intl.NumberFormat('zh-TW', {
+  style: 'currency',
+  currency: 'TWD',
+  maximumFractionDigits: 0,
+})
+
+const percentFormatter = new Intl.NumberFormat('zh-TW', {
+  style: 'percent',
+  maximumFractionDigits: 1,
+})
 
 const interpretationItems = [
   '目前投資組合接近目標配置。',
@@ -36,7 +32,35 @@ const rebalanceReminderItems = [
   '若市場風險升高，應同時檢查現金安全水位與槓桿曝險。',
 ]
 
+function cloneDemoAssets() {
+  return mockPortfolio.assets.map((asset) => ({ ...asset }))
+}
+
 function PortfolioPage() {
+  const [assets, setAssets] = useState(cloneDemoAssets)
+  const portfolio = useMemo(() => calculatePortfolioMetrics(assets), [assets])
+
+  const insightItems = [
+    {
+      label: 'Total Value',
+      value: currencyFormatter.format(portfolio.totalValue),
+      helperText: '目前 portfolio 的總資產規模。',
+    },
+    {
+      label: 'Effective Exposure',
+      value: `約 ${percentFormatter.format(portfolio.effectiveExposure)}`,
+      helperText: '納入槓桿與低曝險資產後的整體曝險概念。',
+    },
+    {
+      label: 'Total Drift',
+      value:
+        portfolio.totalDrift > 0.05
+          ? percentFormatter.format(portfolio.totalDrift)
+          : '輕微偏離',
+      helperText: '用來觀察目前配置與目標配置的距離。',
+    },
+  ]
+
   return (
     <AppShell>
       <PageContainer>
@@ -57,7 +81,7 @@ function PortfolioPage() {
         </div>
 
         <div className="grid gap-5">
-          <PortfolioSummaryCard portfolio={mockPortfolio} />
+          <PortfolioSummaryCard portfolio={portfolio} />
 
           <section className="grid gap-4 md:grid-cols-3">
             {insightItems.map((item) => (
@@ -78,8 +102,19 @@ function PortfolioPage() {
             />
           </div>
 
+          <div className="grid gap-4">
+            <PortfolioEditor assets={assets} onAssetsChange={setAssets} />
+            <button
+              className="justify-self-start rounded-lg border border-cyan-200/30 bg-cyan-200/10 px-5 py-3 text-base font-semibold text-cyan-50 shadow-[0_0_32px_rgba(34,211,238,0.12)] transition hover:border-cyan-100/60 hover:bg-cyan-200/15 focus:outline-none focus:ring-2 focus:ring-cyan-200/70"
+              onClick={() => setAssets(cloneDemoAssets())}
+              type="button"
+            >
+              Reset demo data
+            </button>
+          </div>
+
           <section className="grid gap-4">
-            {mockPortfolio.assets.map((asset) => (
+            {portfolio.assets.map((asset) => (
               <PortfolioAssetCard asset={asset} key={asset.ticker} />
             ))}
           </section>

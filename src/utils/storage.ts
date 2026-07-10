@@ -1,6 +1,7 @@
 export const storageKeys = {
   portfolioAssets: 'polaris.portfolioAssets',
   marketInput: 'polaris.marketInput',
+  userPosition: 'polaris.userPosition',
 }
 
 function getLocalStorage() {

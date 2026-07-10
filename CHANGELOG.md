@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.4 - User Position Settings
+- Added User Position settings to Settings page
+- Added localStorage persistence for User Position
+- Added reset demo user position action
+- Prepared life-context data for future decision engine
+
 ## v0.1.7 - Release Polish
 - Updated README for v0.1 release clarity
 - Added changelog

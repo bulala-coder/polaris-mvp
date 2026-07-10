@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.1.7
+v0.2.4
 
 ## Live Demo
 
@@ -44,6 +44,9 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Mock portfolio data
 - Mock market risk data
 - Mock journal display
+- Editable portfolio with localStorage
+- Editable market data with localStorage
+- User Position settings with localStorage
 - No login
 - No database
 - No brokerage connection

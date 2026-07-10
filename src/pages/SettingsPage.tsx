@@ -1,8 +1,17 @@
+import { useEffect, useRef, useState } from 'react'
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
 import SettingsInfoCard from '../components/settings/SettingsInfoCard'
 import SettingsSectionCard from '../components/settings/SettingsSectionCard'
 import SettingsStatusGrid from '../components/settings/SettingsStatusGrid'
+import UserPositionEditor from '../components/settings/UserPositionEditor'
+import { defaultUserPosition } from '../data/defaultUserPosition'
+import {
+  readFromStorage,
+  removeFromStorage,
+  storageKeys,
+  writeToStorage,
+} from '../utils/storage'
 
 const whatPolarisIs = [
   '長期投資者的決策羅盤',
@@ -22,13 +31,14 @@ const dataStatusItems = [
   { label: 'Portfolio data', value: 'Mock data' },
   { label: 'Market data', value: 'Mock data' },
   { label: 'Journal data', value: 'Mock display' },
+  { label: 'User Position', value: 'Saved in localStorage' },
   { label: 'Storage', value: 'Frontend-only prototype' },
   { label: 'Brokerage connection', value: 'Not connected' },
   { label: 'Financial API', value: 'Not connected' },
 ]
 
 const prototypeLimitItems = [
-  'v0.1.7 目前只展示產品流程與 UI',
+  'v0.2.4 目前只展示產品流程與 UI',
   '尚未支援真實資料輸入',
   '尚未支援帳號登入',
   '尚未支援資料儲存',
@@ -44,6 +54,26 @@ const disclaimerItems = [
 ]
 
 function SettingsPage() {
+  const skipNextStorageWrite = useRef(false)
+  const [userPosition, setUserPosition] = useState(() =>
+    readFromStorage(storageKeys.userPosition, { ...defaultUserPosition }),
+  )
+
+  useEffect(() => {
+    if (skipNextStorageWrite.current) {
+      skipNextStorageWrite.current = false
+      return
+    }
+
+    writeToStorage(storageKeys.userPosition, userPosition)
+  }, [userPosition])
+
+  function resetUserPosition() {
+    removeFromStorage(storageKeys.userPosition)
+    skipNextStorageWrite.current = true
+    setUserPosition({ ...defaultUserPosition })
+  }
+
   return (
     <AppShell>
       <PageContainer>
@@ -60,6 +90,8 @@ function SettingsPage() {
           <p className="mt-4 text-base leading-relaxed text-slate-400">
             Settings
             用來說明 Polaris 的產品定位、資料狀態、版本限制與使用邊界。
+            v0.2.4 adds local User Position settings for future decision
+            generation.
           </p>
         </div>
 
@@ -68,6 +100,11 @@ function SettingsPage() {
           <SettingsSectionCard
             title="Polaris 不是什麼"
             items={whatPolarisIsNot}
+          />
+          <UserPositionEditor
+            onReset={resetUserPosition}
+            onUserPositionChange={setUserPosition}
+            userPosition={userPosition}
           />
           <SettingsStatusGrid items={dataStatusItems} />
           <SettingsSectionCard
@@ -81,8 +118,8 @@ function SettingsPage() {
           <SettingsInfoCard
             description="目前產品與技術版本。"
             items={[
-              'Polaris v0.1.7',
-              'Frontend-only prototype',
+              'Polaris v0.2.4',
+              'Frontend-only local prototype',
               'React + Vite + TypeScript + Tailwind CSS',
               'Deployment：Vercel',
               'Repository：GitHub',

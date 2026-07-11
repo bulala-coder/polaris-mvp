@@ -3,27 +3,27 @@ import { NavLink } from 'react-router-dom'
 
 const navigationItems = [
   {
-    label: 'Today',
+    label: '今日',
     to: '/today',
     icon: Home,
   },
   {
-    label: 'Portfolio',
+    label: '組合',
     to: '/portfolio',
     icon: PieChart,
   },
   {
-    label: 'Market',
+    label: '市場',
     to: '/market',
     icon: Compass,
   },
   {
-    label: 'Journal',
+    label: '反思',
     to: '/journal',
     icon: BookOpen,
   },
   {
-    label: 'Settings',
+    label: '設定',
     to: '/settings',
     icon: Settings,
   },

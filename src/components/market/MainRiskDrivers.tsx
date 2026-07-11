@@ -7,7 +7,9 @@ type MainRiskDriversProps = {
 function MainRiskDrivers({ drivers }: MainRiskDriversProps) {
   return (
     <section className="rounded-lg border border-white/10 bg-white/[0.07] p-6 shadow-xl shadow-cyan-950/20 backdrop-blur-xl">
-      <h2 className="text-2xl font-semibold text-white">Main Risk Drivers</h2>
+      <h2 className="text-2xl font-semibold text-white">
+        主要風險來源｜Main Risk Drivers
+      </h2>
 
       <div className="mt-5 grid gap-3">
         {drivers.map((driver, index) => (

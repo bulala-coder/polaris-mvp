@@ -18,11 +18,11 @@ const numericFields: Array<{
   label: string
   max?: number
 }> = [
-  { key: 'age', label: 'Age' },
-  { key: 'investmentHorizonYears', label: 'Investment horizon years' },
-  { key: 'monthlyContribution', label: 'Monthly contribution' },
-  { key: 'cashReserveMonths', label: 'Cash reserve months' },
-  { key: 'maxAcceptableDrawdown', label: 'Max acceptable drawdown', max: 100 },
+  { key: 'age', label: '年齡｜Age' },
+  { key: 'investmentHorizonYears', label: '投資期限（年）｜Investment Horizon' },
+  { key: 'monthlyContribution', label: '每月投入｜Monthly Contribution' },
+  { key: 'cashReserveMonths', label: '現金安全月數｜Cash Reserve' },
+  { key: 'maxAcceptableDrawdown', label: '最大可接受回撤｜Max Acceptable Drawdown', max: 100 },
 ]
 
 function toSafeNumber(value: string, max?: number) {
@@ -69,11 +69,13 @@ function UserPositionEditor({
   return (
     <section className="rounded-lg border border-white/10 bg-white/[0.07] p-6 shadow-xl shadow-cyan-950/20 backdrop-blur-xl sm:p-7">
       <div className="mb-6 max-w-3xl">
-        <h2 className="text-2xl font-semibold text-white">User Position</h2>
+        <h2 className="text-2xl font-semibold text-white">
+          使用者投資背景｜User Position
+        </h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
-          User Position helps Polaris understand your life context before
-          interpreting portfolio and market risk. Saved in this browser using
-          localStorage.
+          使用者投資背景能幫助 Polaris
+          在解讀投資組合與市場風險前，先理解你的生活與風險承受脈絡。資料會儲存在此瀏覽器的
+          localStorage。
         </p>
       </div>
 
@@ -101,15 +103,15 @@ function UserPositionEditor({
 
         <label className="grid gap-2 rounded-lg border border-white/10 bg-slate-950/60 p-4">
           <span className="text-sm font-medium text-slate-400">
-            Uses leverage
+            是否使用槓桿｜Uses Leverage
           </span>
           <select
             className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
             onChange={(event) => updateUsesLeverage(event.target.value === 'yes')}
             value={userPosition.usesLeverage ? 'yes' : 'no'}
           >
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
+            <option value="yes">是｜Yes</option>
+            <option value="no">否｜No</option>
           </select>
         </label>
       </div>
@@ -119,7 +121,7 @@ function UserPositionEditor({
         onClick={onReset}
         type="button"
       >
-        Reset demo user position
+        重設示範投資背景
       </button>
     </section>
   )

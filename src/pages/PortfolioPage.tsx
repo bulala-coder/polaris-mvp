@@ -60,17 +60,17 @@ function PortfolioPage() {
 
   const insightItems = [
     {
-      label: 'Total Value',
+      label: '總資產｜Total Value',
       value: currencyFormatter.format(portfolio.totalValue),
       helperText: '目前 portfolio 的總資產規模。',
     },
     {
-      label: 'Effective Exposure',
+      label: '有效曝險｜Effective Exposure',
       value: `約 ${percentFormatter.format(portfolio.effectiveExposure)}`,
       helperText: '納入槓桿與低曝險資產後的整體曝險概念。',
     },
     {
-      label: 'Total Drift',
+      label: '總偏離｜Total Drift',
       value:
         portfolio.totalDrift > 0.05
           ? percentFormatter.format(portfolio.totalDrift)
@@ -84,10 +84,10 @@ function PortfolioPage() {
       <PageContainer>
         <div className="mb-8 max-w-3xl">
           <p className="mb-4 inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm font-medium text-cyan-100">
-            Portfolio
+            投資組合｜Portfolio
           </p>
           <h1 className="text-4xl font-semibold tracking-normal text-white sm:text-5xl">
-            Portfolio
+            投資組合｜Portfolio
           </h1>
           <p className="mt-5 text-xl leading-relaxed text-slate-300">
             檢查你的配置是否仍貼近原本策略
@@ -131,7 +131,7 @@ function PortfolioPage() {
               }}
               type="button"
             >
-              Reset demo data
+              重設示範資料
             </button>
           </div>
 

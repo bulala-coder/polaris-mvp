@@ -61,7 +61,7 @@ function HeroDecisionCard({
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.28em] text-cyan-200/80">
-            Today
+            今日｜Today
           </p>
           <h2 className="mt-2 text-2xl font-semibold text-white">
             今日決策卡

@@ -7,7 +7,9 @@ type CategoryScoreListProps = {
 function CategoryScoreList({ categoryScores }: CategoryScoreListProps) {
   return (
     <section className="rounded-lg border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-black/20 backdrop-blur">
-      <h2 className="text-2xl font-semibold text-white">Category Scores</h2>
+      <h2 className="text-2xl font-semibold text-white">
+        分項分數｜Category Scores
+      </h2>
 
       <div className="mt-5 grid gap-4">
         {categoryScores.map((category) => (

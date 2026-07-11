@@ -5,7 +5,9 @@ type RecommendedActionBoxProps = {
 function RecommendedActionBox({ items }: RecommendedActionBoxProps) {
   return (
     <section className="rounded-lg border border-cyan-200/15 bg-cyan-200/[0.06] p-6 shadow-xl shadow-cyan-950/20 backdrop-blur-xl">
-      <h2 className="text-2xl font-semibold text-white">建議行動</h2>
+      <h2 className="text-2xl font-semibold text-white">
+        建議行動｜Recommended Actions
+      </h2>
 
       <ul className="mt-5 grid gap-3">
         {items.map((item) => (

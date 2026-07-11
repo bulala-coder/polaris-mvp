@@ -10,14 +10,16 @@ function MarketRiskSummaryCard({ marketScore }: MarketRiskSummaryCardProps) {
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <p className="text-sm font-medium text-slate-400">
-            Market Risk Score
+            市場風險分數｜Market Risk Score
           </p>
           <p className="mt-3 text-4xl font-semibold text-white">
             {marketScore.marketRiskScore.toFixed(1)}
           </p>
         </div>
         <div>
-          <p className="text-sm font-medium text-slate-400">Risk Level</p>
+          <p className="text-sm font-medium text-slate-400">
+            風險等級｜Risk Level
+          </p>
           <p className="mt-3 text-2xl font-semibold text-cyan-100">
             Level {marketScore.marketRiskLevel}｜{marketScore.marketRiskLabel}
           </p>

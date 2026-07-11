@@ -60,11 +60,10 @@ function PortfolioEditor({ assets, onAssetsChange }: PortfolioEditorProps) {
           v0.2.1
         </p>
         <h2 className="mt-2 text-2xl font-semibold text-white">
-          Edit Portfolio
+          編輯投資組合｜Edit Portfolio
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
-          Portfolio changes are saved in this browser using localStorage. Use
-          Reset demo data to restore the original demo portfolio.
+          投資組合變更會儲存在此瀏覽器的 localStorage。若要恢復原始示範投資組合，請使用重設示範資料。
         </p>
       </div>
 
@@ -79,7 +78,7 @@ function PortfolioEditor({ assets, onAssetsChange }: PortfolioEditorProps) {
                 <h3 className="text-lg font-semibold text-white">
                   {asset.ticker}
                 </h3>
-                <p className="text-sm text-slate-500">Demo asset</p>
+                <p className="text-sm text-slate-500">示範資產｜Demo asset</p>
               </div>
               {asset.exposureMultiplier > 1 ? (
                 <span className="rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-sm font-semibold text-amber-100">
@@ -91,7 +90,7 @@ function PortfolioEditor({ assets, onAssetsChange }: PortfolioEditorProps) {
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
               <label className="grid gap-2">
                 <span className="text-sm font-medium text-slate-400">
-                  Name
+                  名稱｜Name
                 </span>
                 <input
                   className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
@@ -105,7 +104,7 @@ function PortfolioEditor({ assets, onAssetsChange }: PortfolioEditorProps) {
 
               <label className="grid gap-2">
                 <span className="text-sm font-medium text-slate-400">
-                  Current Value
+                  目前市值｜Current Value
                 </span>
                 <input
                   className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
@@ -119,7 +118,7 @@ function PortfolioEditor({ assets, onAssetsChange }: PortfolioEditorProps) {
 
               <label className="grid gap-2">
                 <span className="text-sm font-medium text-slate-400">
-                  Target Weight
+                  目標比例｜Target Weight
                 </span>
                 <input
                   className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
@@ -134,7 +133,7 @@ function PortfolioEditor({ assets, onAssetsChange }: PortfolioEditorProps) {
 
               <label className="grid gap-2">
                 <span className="text-sm font-medium text-slate-400">
-                  Asset Type
+                  資產類型｜Asset Type
                 </span>
                 <input
                   className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
@@ -148,7 +147,7 @@ function PortfolioEditor({ assets, onAssetsChange }: PortfolioEditorProps) {
 
               <label className="grid gap-2">
                 <span className="text-sm font-medium text-slate-400">
-                  Exposure Multiplier
+                  曝險倍數｜Exposure Multiplier
                 </span>
                 <input
                   className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"

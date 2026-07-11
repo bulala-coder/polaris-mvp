@@ -66,17 +66,17 @@ function TodayPage() {
 
   const snapshotItems = [
     {
-      label: 'Market Risk',
+      label: '市場風險｜Market Risk',
       value: `Level ${marketScore.marketRiskLevel}｜${marketScore.marketRiskLabel}`,
       helperText: '市場壓力會用於判斷今天是否需要更謹慎。',
     },
     {
-      label: 'Portfolio Drift',
+      label: '配置偏離｜Portfolio Drift',
       value: `${(portfolio.totalDrift * 100).toFixed(1)}%`,
       helperText: '配置偏離會用於判斷是否需要回到原本計畫。',
     },
     {
-      label: 'Effective Exposure',
+      label: '有效曝險｜Effective Exposure',
       value: `${Math.round(portfolio.effectiveExposure * 100)}%`,
       helperText: '反映槓桿與低曝險資產後的整體曝險。',
     },
@@ -87,7 +87,7 @@ function TodayPage() {
       <PageContainer>
         <div className="mb-8 max-w-3xl">
           <p className="mb-4 inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm font-medium text-cyan-100 shadow-[0_0_32px_rgba(34,211,238,0.12)]">
-            Today
+            今日決策｜Today
           </p>
           <h1 className="text-4xl font-semibold tracking-normal text-white sm:text-5xl">
             今日決策
@@ -109,7 +109,9 @@ function TodayPage() {
         />
 
         <section className="mt-5">
-          <h2 className="text-2xl font-semibold text-white">Snapshot</h2>
+          <h2 className="text-2xl font-semibold text-white">
+            今日快照｜Snapshot
+          </h2>
           <div className="mt-5 grid gap-4 md:grid-cols-3">
             {snapshotItems.map((item) => (
               <SnapshotCard
@@ -130,7 +132,7 @@ function TodayPage() {
 
         <section className="mt-5 rounded-lg border border-white/10 bg-slate-950/60 p-5 text-sm leading-relaxed text-slate-400 shadow-xl shadow-black/20 backdrop-blur">
           <h2 className="text-base font-semibold text-slate-100">
-            Trust Notice
+            信任與限制說明｜Trust Notice
           </h2>
           <p className="mt-3">{decisionOutput.trustNotice}</p>
         </section>

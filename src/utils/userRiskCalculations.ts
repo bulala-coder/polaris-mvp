@@ -28,45 +28,45 @@ export function calculateUserRiskCapacity(
 
   if (userPosition.investmentHorizonYears >= 15) {
     score += 15
-    reasons.push('Long investment horizon supports higher risk capacity.')
+    reasons.push('投資期限較長，能支撐較高的風險承受能力。')
   } else if (userPosition.investmentHorizonYears >= 7) {
     score += 5
-    reasons.push('Medium investment horizon provides moderate risk capacity.')
+    reasons.push('投資期限中等，提供中等風險承受條件。')
   } else {
     score -= 10
-    reasons.push('Short investment horizon limits risk capacity.')
+    reasons.push('投資期限較短，會限制風險承受能力。')
   }
 
   if (userPosition.cashReserveMonths >= 12) {
     score += 10
-    reasons.push('Cash reserve supports risk capacity.')
+    reasons.push('現金安全水位充足，有助於承受市場波動。')
   } else if (userPosition.cashReserveMonths >= 6) {
     score += 5
-    reasons.push('Cash reserve is near the safety threshold.')
+    reasons.push('現金安全水位接近基本門檻。')
   } else {
     score -= 15
-    reasons.push('Cash reserve is below safety threshold.')
+    reasons.push('現金安全水位低於安全門檻。')
   }
 
   if (userPosition.maxAcceptableDrawdown >= 35) {
     score += 10
-    reasons.push('Higher drawdown tolerance supports risk capacity.')
+    reasons.push('可接受回撤較高，有助於承受投資波動。')
   } else if (userPosition.maxAcceptableDrawdown < 20) {
     score -= 15
-    reasons.push('Lower drawdown tolerance limits risk capacity.')
+    reasons.push('可接受回撤較低，會限制風險承受能力。')
   }
 
   if (userPosition.usesLeverage) {
     score -= 10
-    reasons.push('Leverage reduces risk capacity.')
+    reasons.push('使用槓桿會降低整體風險承受能力。')
   }
 
   if (userPosition.age >= 55) {
     score -= 10
-    reasons.push('Later life stage reduces risk capacity.')
+    reasons.push('較接近資金使用階段，風險承受能力需要更保守評估。')
   } else if (userPosition.age < 35) {
     score += 5
-    reasons.push('Earlier life stage can support higher risk capacity.')
+    reasons.push('較早期的人生階段通常能支撐較長期的投資計畫。')
   }
 
   const clampedScore = clampScore(score)

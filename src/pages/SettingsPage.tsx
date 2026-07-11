@@ -28,17 +28,17 @@ const whatPolarisIsNot = [
 ]
 
 const dataStatusItems = [
-  { label: 'Portfolio data', value: 'Mock data' },
-  { label: 'Market data', value: 'Mock data' },
-  { label: 'Journal data', value: 'Mock display' },
-  { label: 'User Position', value: 'Saved in localStorage' },
-  { label: 'Storage', value: 'Frontend-only prototype' },
-  { label: 'Brokerage connection', value: 'Not connected' },
-  { label: 'Financial API', value: 'Not connected' },
+  { label: '投資組合資料｜Portfolio data', value: 'Mock data' },
+  { label: '市場資料｜Market data', value: 'Mock data' },
+  { label: '反思紀錄｜Journal data', value: 'Mock display' },
+  { label: '使用者投資背景｜User Position', value: 'Saved in localStorage' },
+  { label: '儲存狀態｜Storage', value: 'Frontend-only prototype' },
+  { label: '券商連線｜Brokerage connection', value: 'Not connected' },
+  { label: '金融資料 API｜Financial API', value: 'Not connected' },
 ]
 
 const prototypeLimitItems = [
-  'v0.2.4 目前只展示產品流程與 UI',
+  'v0.2.6 目前只展示產品流程與 UI',
   '尚未支援真實資料輸入',
   '尚未支援帳號登入',
   '尚未支援資料儲存',
@@ -79,19 +79,18 @@ function SettingsPage() {
       <PageContainer>
         <div className="mb-8 max-w-3xl">
           <p className="mb-4 inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm font-medium text-cyan-100">
-            Settings
+            設定｜Settings
           </p>
           <h1 className="text-4xl font-semibold tracking-normal text-white sm:text-5xl">
-            Settings
+            設定｜Settings
           </h1>
           <p className="mt-5 text-xl leading-relaxed text-slate-300">
             管理 Polaris 的資料狀態與產品設定
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-400">
-            Settings
-            用來說明 Polaris 的產品定位、資料狀態、版本限制與使用邊界。
-            v0.2.4 adds local User Position settings for future decision
-            generation.
+            Settings 用來說明 Polaris
+            的產品定位、資料狀態、版本限制與使用邊界。v0.2.6
+            介面以繁體中文為主，並保留重要英文產品名詞。
           </p>
         </div>
 
@@ -118,13 +117,13 @@ function SettingsPage() {
           <SettingsInfoCard
             description="目前產品與技術版本。"
             items={[
-              'Polaris v0.2.4',
+              'Polaris v0.2.6',
               'Frontend-only local prototype',
               'React + Vite + TypeScript + Tailwind CSS',
               'Deployment：Vercel',
               'Repository：GitHub',
             ]}
-            title="Version"
+            title="版本資訊｜Version"
           />
         </div>
       </PageContainer>

@@ -19,21 +19,21 @@ const scoreFields: Array<{
   label: string
   helperText: string
 }> = [
-  { key: 'valuationScore', label: 'Valuation', helperText: '估值' },
-  { key: 'momentumScore', label: 'Momentum', helperText: '動能' },
-  { key: 'volatilityScore', label: 'Volatility', helperText: '波動度' },
+  { key: 'valuationScore', label: '估值分數｜Valuation', helperText: '估值' },
+  { key: 'momentumScore', label: '動能分數｜Momentum', helperText: '動能' },
+  { key: 'volatilityScore', label: '波動分數｜Volatility', helperText: '波動度' },
   {
     key: 'interestRateScore',
-    label: 'Interest Rate',
+    label: '利率分數｜Interest Rate',
     helperText: '利率環境',
   },
   {
     key: 'businessCycleScore',
-    label: 'Business Cycle',
+    label: '景氣分數｜Business Cycle',
     helperText: '景氣循環',
   },
-  { key: 'creditRiskScore', label: 'Credit Risk', helperText: '信用風險' },
-  { key: 'sentimentScore', label: 'Sentiment', helperText: '市場情緒' },
+  { key: 'creditRiskScore', label: '信用風險分數｜Credit Risk', helperText: '信用風險' },
+  { key: 'sentimentScore', label: '市場情緒分數｜Sentiment', helperText: '市場情緒' },
 ]
 
 function clampScore(value: string) {
@@ -75,11 +75,10 @@ function MarketEditor({
           v0.2.2
         </p>
         <h2 className="mt-2 text-2xl font-semibold text-white">
-          Edit Market Data
+          編輯市場資料｜Edit Market Data
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
-          Market changes are saved in this browser using localStorage. Use Reset
-          demo market data to restore the original demo market input.
+          市場資料變更會儲存在此瀏覽器的 localStorage。若要恢復原始示範市場資料，請使用重設示範市場資料。
         </p>
       </div>
 
@@ -106,7 +105,7 @@ function MarketEditor({
 
         <label className="grid gap-2 rounded-lg border border-white/10 bg-slate-950/60 p-4">
           <span className="text-sm font-medium text-slate-400">
-            Data Confidence
+            資料信心度｜Data Confidence
           </span>
           <select
             className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
@@ -115,9 +114,9 @@ function MarketEditor({
             }
             value={marketInput.dataConfidenceLevel}
           >
-            <option value="low">low</option>
-            <option value="medium">medium</option>
-            <option value="high">high</option>
+            <option value="low">低｜low</option>
+            <option value="medium">中｜medium</option>
+            <option value="high">高｜high</option>
           </select>
           <span className="text-xs text-slate-500">low / medium / high</span>
         </label>

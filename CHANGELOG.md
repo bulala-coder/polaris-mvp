@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.6 - Chinese Copy Polish
+- Updated core interface copy to Traditional Chinese
+- Changed Today decision output to Chinese-first wording
+- Localized Portfolio, Market, Settings, and navigation labels
+- Retained key English product terms for clarity
+
 ## v0.2.5 - Decision Engine v0.2
 - Added user risk capacity calculation
 - Added local prototype decision engine

@@ -4,7 +4,7 @@ import type { Portfolio } from '../types/portfolio'
 import type { UserPosition, UserRiskCapacity } from '../types/userPosition'
 
 const trustNotice =
-  'Polaris v0.2.5 uses local prototype data from Portfolio, Market, and User Position. It does not provide financial advice, stock recommendations, short-term trading signals, market predictions, or guaranteed investment outcomes.'
+  'Polaris v0.2.6 使用本機原型資料，包括 Portfolio、Market 與 User Position。Polaris 不提供財務建議、個股推薦、短線交易訊號、市場預測或保證投資結果。'
 
 type GenerateTodayDecisionParams = {
   portfolio: Portfolio
@@ -21,22 +21,22 @@ export function generateTodayDecision({
 }: GenerateTodayDecisionParams): DecisionOutput {
   if (userPosition.cashReserveMonths < 6) {
     return {
-      decisionLabel: 'Prioritize cash safety',
+      decisionLabel: '優先補強現金安全水位',
       riskLevel: 4,
       summary:
-        'Your cash reserve is below the safety threshold. Before increasing exposure, rebuild liquidity.',
+        '你的現金安全水位低於門檻。在增加曝險前，應先補強流動性。',
       reasons: [
-        'Cash reserve is below the safety threshold.',
-        'Liquidity risk should be reviewed before exposure changes.',
+        '現金安全水位低於安全門檻。',
+        '在調整曝險前，應先檢查流動性風險。',
         ...userRiskCapacity.reasons.slice(0, 2),
       ],
       recommendedActions: [
-        'Review monthly contribution and emergency cash reserve.',
-        'Avoid increasing risky exposure until cash reserve improves.',
+        '檢查每月投入金額與緊急預備金是否足夠。',
+        '在現金安全水位改善前，避免增加高風險曝險。',
       ],
       notRecommendedActions: [
-        'Do not increase exposure only because the market looks attractive.',
-        'Do not ignore liquidity risk.',
+        '不要只因市場看起來有吸引力就增加曝險。',
+        '不要忽略流動性風險。',
       ],
       trustNotice,
     }
@@ -44,22 +44,22 @@ export function generateTodayDecision({
 
   if (userPosition.usesLeverage && portfolio.effectiveExposure > 1.3) {
     return {
-      decisionLabel: 'Reduce leverage pressure',
+      decisionLabel: '降低槓桿曝險壓力',
       riskLevel: 4,
       summary:
-        'Effective exposure is elevated while leverage is being used. Risk control should come before adding more exposure.',
+        '目前使用槓桿且有效曝險偏高。在增加曝險前，應先確認風險控制是否仍符合原本計畫。',
       reasons: [
-        'Leverage is enabled in User Position.',
-        'Effective exposure is above the elevated threshold.',
-        'Risk control should be reviewed before increasing exposure.',
+        'User Position 顯示目前使用槓桿。',
+        '投資組合有效曝險高於警戒門檻。',
+        '在增加曝險前，應先檢查風險控制。',
       ],
       recommendedActions: [
-        'Review whether current exposure still matches your long-term plan.',
-        'Consider using new cash flow to reduce exposure pressure.',
+        '檢查目前曝險是否仍符合長期配置計畫。',
+        '可優先用新的現金流降低曝險壓力。',
       ],
       notRecommendedActions: [
-        'Do not add leverage in response to short-term optimism.',
-        'Do not treat high exposure as normal without a clear plan.',
+        '不要因短期樂觀情緒而增加槓桿。',
+        '不要在缺乏清楚計畫時，把高曝險視為常態。',
       ],
       trustNotice,
     }
@@ -67,22 +67,22 @@ export function generateTodayDecision({
 
   if (userRiskCapacity.level === 'low' && portfolio.effectiveExposure > 1) {
     return {
-      decisionLabel: 'Align exposure with risk capacity',
+      decisionLabel: '讓曝險符合自身風險承受能力',
       riskLevel: 4,
       summary:
-        'Current exposure may be higher than your risk capacity. Recheck whether your allocation still fits your life context.',
+        '目前曝險可能高於你的風險承受能力。請重新檢查配置是否仍符合生活脈絡與長期計畫。',
       reasons: [
-        'Risk capacity is currently low.',
-        'Effective exposure is above 100%.',
-        'Risk capacity and exposure may not be aligned.',
+        '目前風險承受能力偏低。',
+        '有效曝險高於 100%。',
+        '個人風險承受能力與投資曝險可能不一致。',
       ],
       recommendedActions: [
-        'Review investment horizon, cash reserve, and drawdown tolerance.',
-        'Consider lowering exposure gradually instead of making emotional changes.',
+        '檢查投資期限、現金安全水位與可接受回撤。',
+        '若需要降低曝險，優先採取漸進方式，避免情緒化調整。',
       ],
       notRecommendedActions: [
-        'Do not keep high exposure only because it worked before.',
-        'Do not ignore personal risk capacity.',
+        '不要只因過去有效，就持續維持高曝險。',
+        '不要忽略自身風險承受能力。',
       ],
       trustNotice,
     }
@@ -90,22 +90,22 @@ export function generateTodayDecision({
 
   if (marketScore.marketRiskLevel >= 5) {
     return {
-      decisionLabel: 'Defensive review needed',
+      decisionLabel: '需要進行防守型檢查',
       riskLevel: 5,
       summary:
-        'Market risk is extremely high. Polaris recommends reviewing exposure and avoiding aggressive increases.',
+        '市場風險處於極高區間。Polaris 建議檢查曝險與現金水位，並避免積極增加曝險。',
       reasons: [
-        'Market risk is at an extremely high level.',
-        'Exposure and cash reserve should be reviewed together.',
-        'Aggressive increases are not aligned with risk control.',
+        '市場風險處於極高等級。',
+        '曝險與現金安全水位應一起檢查。',
+        '積極增加曝險不符合風險控制原則。',
       ],
       recommendedActions: [
-        'Review portfolio exposure and cash reserve.',
-        'Avoid aggressive increases until risk level falls.',
+        '檢查投資組合曝險與現金安全水位。',
+        '在風險等級下降前，避免積極增加曝險。',
       ],
       notRecommendedActions: [
-        'Do not chase returns in an overheated environment.',
-        'Do not make large moves without checking your plan.',
+        '不要在過熱環境中追逐報酬。',
+        '不要在未檢查原本計畫前做出大幅調整。',
       ],
       trustNotice,
     }
@@ -113,44 +113,44 @@ export function generateTodayDecision({
 
   if (portfolio.totalDrift > 0.08) {
     return {
-      decisionLabel: 'Rebalance with discipline',
+      decisionLabel: '依照紀律再平衡',
       riskLevel: 3,
       summary:
-        'Portfolio allocation has drifted from target. Rebalancing can help restore your original plan.',
+        '投資組合配置已偏離目標。再平衡可以幫助配置回到原本計畫。',
       reasons: [
-        'Portfolio allocation has drifted from target.',
-        'Rebalancing can restore the original plan.',
-        'New contributions may reduce unnecessary trading.',
+        '投資組合配置已偏離目標比例。',
+        '再平衡有助於回到原本配置計畫。',
+        '優先使用新資金可減少不必要交易。',
       ],
       recommendedActions: [
-        'Use new contributions first when possible.',
-        'Review assets with the largest drift before selling.',
+        '可行時，優先使用新的投入資金調整配置。',
+        '在賣出前，先檢查偏離最大的資產是否仍符合長期策略。',
       ],
       notRecommendedActions: [
-        'Do not rebalance based on market noise alone.',
-        'Do not overtrade small allocation differences.',
+        '不要只因市場雜訊而再平衡。',
+        '不要因小幅配置差異而過度交易。',
       ],
       trustNotice,
     }
   }
 
   return {
-    decisionLabel: 'Maintain strategy',
+    decisionLabel: '維持原定策略',
     riskLevel: marketScore.marketRiskLevel,
     summary:
-      'No major strategy change is required today. Continue following the long-term plan with discipline.',
+      '今天不需要大幅改變策略。請繼續依照長期計畫，保持紀律執行。',
     reasons: [
-      'Portfolio drift is within a manageable range.',
-      'Market risk does not require a defensive shift.',
-      'User position does not require immediate exposure reduction.',
+      '投資組合偏離仍在可管理範圍內。',
+      '目前市場風險尚未要求切換為防守模式。',
+      'User Position 未顯示需要立即降低曝險。',
     ],
     recommendedActions: [
-      'Continue regular contribution if it fits your plan.',
-      'Review portfolio and market context periodically.',
+      '若符合原本計畫，可持續定期投入。',
+      '定期檢查投資組合與市場風險背景。',
     ],
     notRecommendedActions: [
-      'Do not change allocation because of single-day market movement.',
-      'Do not use Polaris as a short-term trading signal.',
+      '不要因單日市場波動改變配置。',
+      '不要把 Polaris 當作短線買賣訊號。',
     ],
     trustNotice,
   }

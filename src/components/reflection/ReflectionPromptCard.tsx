@@ -9,7 +9,7 @@ function ReflectionPromptCard() {
   return (
     <section className="rounded-lg border border-white/10 bg-white/[0.07] p-6 shadow-2xl shadow-cyan-950/30 backdrop-blur-xl sm:p-8">
       <p className="text-sm font-medium uppercase tracking-[0.28em] text-cyan-200/80">
-        Today
+        今日｜Today
       </p>
       <h2 className="mt-2 text-2xl font-semibold text-white">
         今日回顧提示

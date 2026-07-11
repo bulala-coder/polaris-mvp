@@ -55,17 +55,17 @@ function MarketPage() {
 
   const insightItems = [
     {
-      label: 'Market Risk',
+      label: '市場風險｜Market Risk',
       value: `Level ${marketScore.marketRiskLevel}｜${marketScore.marketRiskLabel}`,
       helperText: '目前風險背景偏高，適合提高檢查頻率。',
     },
     {
-      label: 'Data Confidence',
+      label: '資料信心度｜Data Confidence',
       value: formatConfidenceLevel(marketScore.dataConfidenceLevel),
       helperText: '此版本以 mock data 呈現產品判讀方式。',
     },
     {
-      label: 'Top Driver',
+      label: '主要風險來源｜Top Driver',
       value: topDriver
         ? `${topDriver.description}偏熱`
         : '尚未設定主要來源',
@@ -80,10 +80,10 @@ function MarketPage() {
       <PageContainer>
         <div className="mb-8 max-w-3xl">
           <p className="mb-4 inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm font-medium text-cyan-100">
-            Market
+            市場風險｜Market
           </p>
           <h1 className="text-4xl font-semibold tracking-normal text-white sm:text-5xl">
-            Market
+            市場風險｜Market
           </h1>
           <p className="mt-5 text-xl leading-relaxed text-slate-300">
             理解目前市場環境對長期策略的壓力
@@ -127,7 +127,7 @@ function MarketPage() {
               }}
               type="button"
             >
-              Reset demo market data
+              重設示範市場資料
             </button>
           </div>
 
@@ -136,7 +136,7 @@ function MarketPage() {
               <MainRiskDrivers drivers={marketScore.mainRiskDrivers} />
               <section className="rounded-lg border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-black/20 backdrop-blur">
                 <p className="text-sm font-medium text-slate-400">
-                  Data Confidence
+                  資料信心度｜Data Confidence
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-white">
                   {formatConfidenceLevel(marketScore.dataConfidenceLevel)}

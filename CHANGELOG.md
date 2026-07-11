@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.1 - Save Today Decision
+- Added Save Today Decision action
+- Saved decision output to localStorage
+- Stored Portfolio, Market, and User Position snapshots with each decision entry
+- Displayed saved decision count on Today page
+
 ## v0.3.0 - Decision History Data Model
 - Added decision history types
 - Added decision history localStorage key

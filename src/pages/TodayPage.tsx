@@ -1,8 +1,9 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import HeroDecisionCard from '../components/decision/HeroDecisionCard'
 import NotRecommendedBox from '../components/decision/NotRecommendedBox'
 import ReasonList from '../components/decision/ReasonList'
 import RecommendedActionBox from '../components/decision/RecommendedActionBox'
+import SaveDecisionPanel from '../components/decision/SaveDecisionPanel'
 import SnapshotCard from '../components/decision/SnapshotCard'
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
@@ -16,6 +17,10 @@ import type { DecisionRiskLevel } from '../types/decisionOutput'
 import { buildMarketScore } from '../utils/marketCalculations'
 import { calculatePortfolioMetrics } from '../utils/portfolioCalculations'
 import { generateTodayDecision } from '../utils/decisionEngine'
+import {
+  addDecisionHistoryEntry,
+  readDecisionHistory,
+} from '../utils/decisionHistoryStorage'
 import {
   readFromStorage,
   storageKeys,
@@ -31,6 +36,9 @@ const riskLevelLabels: Record<DecisionRiskLevel, string> = {
 }
 
 function TodayPage() {
+  const [saveMessage, setSaveMessage] = useState('')
+  const [savedCount, setSavedCount] = useState(() => readDecisionHistory().length)
+
   const portfolioAssets = useMemo(
     () => readFromStorage(storageKeys.portfolioAssets, mockPortfolio.assets),
     [],
@@ -63,6 +71,21 @@ function TodayPage() {
       }),
     [marketScore, portfolio, userPosition, userRiskCapacity],
   )
+
+  const handleSaveDecision = () => {
+    const entries = addDecisionHistoryEntry({
+      decisionOutput,
+      portfolioSnapshot: portfolio,
+      marketSnapshot: marketScore,
+      userPositionSnapshot: userPosition,
+    })
+    const nextSavedCount = entries.length
+
+    setSavedCount(nextSavedCount)
+    setSaveMessage(
+      `已儲存本次決策紀錄。你目前有 ${nextSavedCount} 筆決策紀錄。`,
+    )
+  }
 
   const snapshotItems = [
     {
@@ -106,6 +129,12 @@ function TodayPage() {
           riskLabel={riskLevelLabels[decisionOutput.riskLevel]}
           riskLevel={decisionOutput.riskLevel}
           summary={decisionOutput.summary}
+        />
+
+        <SaveDecisionPanel
+          onSave={handleSaveDecision}
+          savedCount={savedCount}
+          saveStatus={saveMessage}
         />
 
         <section className="mt-5">

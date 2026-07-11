@@ -117,7 +117,7 @@ function SettingsPage() {
           <SettingsInfoCard
             description="目前產品與技術版本。"
             items={[
-              'Polaris v0.2.7',
+              'Polaris v0.3.1',
               'Frontend-only local prototype',
               'React + Vite + TypeScript + Tailwind CSS',
               'Deployment：Vercel',

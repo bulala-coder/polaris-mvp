@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.3.0
+v0.3.1
 
 ## Live Demo
 
@@ -55,6 +55,8 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Decision Engine v0.2
 - Decision history data model prepared
 - Decision history localStorage utilities prepared
+- Save Today decision to localStorage
+- Decision history entries include Portfolio, Market, and User Position snapshots
 - Traditional Chinese copy polish
 - Chinese-first interface with English product terms retained
 - No login

@@ -4,7 +4,7 @@ import type { Portfolio } from '../types/portfolio'
 import type { UserPosition, UserRiskCapacity } from '../types/userPosition'
 
 const trustNotice =
-  'Polaris v0.2.6 使用本機原型資料，包括 Portfolio、Market 與 User Position。Polaris 不提供財務建議、個股推薦、短線交易訊號、市場預測或保證投資結果。'
+  'Polaris v0.2.7 使用本機原型資料，包括 Portfolio、Market 與 User Position。Polaris 不提供財務建議、個股推薦、短線交易訊號、市場預測或保證投資結果。'
 
 type GenerateTodayDecisionParams = {
   portfolio: Portfolio

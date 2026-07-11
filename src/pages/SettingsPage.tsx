@@ -38,7 +38,7 @@ const dataStatusItems = [
 ]
 
 const prototypeLimitItems = [
-  'v0.2.6 目前只展示產品流程與 UI',
+  'v0.2.7 目前只展示產品流程與 UI',
   '尚未支援真實資料輸入',
   '尚未支援帳號登入',
   '尚未支援資料儲存',
@@ -89,7 +89,7 @@ function SettingsPage() {
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-400">
             Settings 用來說明 Polaris
-            的產品定位、資料狀態、版本限制與使用邊界。v0.2.6
+            的產品定位、資料狀態、版本限制與使用邊界。v0.2.7
             介面以繁體中文為主，並保留重要英文產品名詞。
           </p>
         </div>
@@ -117,7 +117,7 @@ function SettingsPage() {
           <SettingsInfoCard
             description="目前產品與技術版本。"
             items={[
-              'Polaris v0.2.6',
+              'Polaris v0.2.7',
               'Frontend-only local prototype',
               'React + Vite + TypeScript + Tailwind CSS',
               'Deployment：Vercel',

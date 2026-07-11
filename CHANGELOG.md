@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.7 - Release Polish
+- Updated README for v0.2 local prototype scope
+- Added v0.2 release summary
+- Updated Settings version display
+- Confirmed v0.2 includes editable Portfolio, editable Market, User Position, localStorage, and Decision Engine
+- Confirmed Chinese-first interface copy
+
 ## v0.2.6 - Chinese Copy Polish
 - Updated core interface copy to Traditional Chinese
 - Changed Today decision output to Chinese-first wording

@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0 - Decision History Data Model
+- Added decision history types
+- Added decision history localStorage key
+- Added decision history storage utilities
+- Prepared foundation for saving Today decisions in v0.3.1
+
 ## v0.2.7 - Release Polish
 - Updated README for v0.2 local prototype scope
 - Added v0.2 release summary

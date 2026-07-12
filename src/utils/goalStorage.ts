@@ -8,7 +8,15 @@ import {
 } from './storage'
 
 export function readGoalSettings(): GoalSettings {
-  return readFromStorage(storageKeys.goalSettings, { ...defaultGoal })
+  const storedGoalSettings = readFromStorage<Partial<GoalSettings>>(
+    storageKeys.goalSettings,
+    {},
+  )
+
+  return {
+    ...defaultGoal,
+    ...storedGoalSettings,
+  }
 }
 
 export function writeGoalSettings(goalSettings: GoalSettings): void {

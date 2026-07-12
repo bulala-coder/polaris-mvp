@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.3 - Goal ETA and Suggested Exposure
+- Added estimated time to asset goal
+- Added max exposure setting to Goal page
+- Added suggested exposure based on market risk level and max exposure
+- Updated Home page to show market risk, goal progress, ETA, and suggested exposure
+
 ## v0.3.2 - Simplify Core Experience
 - Simplified visible navigation to three main pages
 - Re-centered product around market risk and asset goal progress

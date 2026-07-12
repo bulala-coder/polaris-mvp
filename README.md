@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.3.2
+v0.3.3
 
 ## Live Demo
 
@@ -48,6 +48,8 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Simplified three-page main experience
 - Home dashboard for market risk and asset goal progress
 - Goal settings saved in localStorage
+- Goal ETA estimate
+- Suggested exposure based on market risk and max exposure
 - Portfolio can be edited and saved in localStorage
 - Market data can be edited and saved in localStorage
 - User Position can be edited and saved in localStorage

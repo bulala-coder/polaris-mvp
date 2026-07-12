@@ -1,6 +1,11 @@
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
 import { mockMarketInput } from '../data/mockData'
+import {
+  calculateGoalProgress,
+  calculateSuggestedExposure,
+  estimateTimeToGoal,
+} from '../utils/goalCalculations'
 import { readGoalSettings } from '../utils/goalStorage'
 import { buildMarketScore } from '../utils/marketCalculations'
 import { readFromStorage, storageKeys } from '../utils/storage'
@@ -13,26 +18,16 @@ function formatCurrency(value: number) {
   }).format(value)
 }
 
-function calculateGoalProgress(currentNetWorth: number, targetNetWorth: number) {
-  if (targetNetWorth <= 0) {
-    return 0
-  }
-
-  return Math.min(100, Math.max(0, (currentNetWorth / targetNetWorth) * 100))
-}
-
 function WelcomePage() {
   const marketInput = readFromStorage(storageKeys.marketInput, mockMarketInput)
   const marketScore = buildMarketScore(marketInput)
   const goalSettings = readGoalSettings()
-  const progress = calculateGoalProgress(
-    goalSettings.currentNetWorth,
-    goalSettings.targetNetWorth,
-  )
-  const remainingAmount = Math.max(
-    0,
-    goalSettings.targetNetWorth - goalSettings.currentNetWorth,
-  )
+  const goalProgress = calculateGoalProgress(goalSettings)
+  const goalEta = estimateTimeToGoal(goalSettings)
+  const suggestedExposure = calculateSuggestedExposure({
+    marketRiskLevel: marketScore.marketRiskLevel,
+    maxExposure: goalSettings.maxExposure,
+  })
 
   return (
     <AppShell>
@@ -84,20 +79,22 @@ function WelcomePage() {
                   資產目標進度
                 </p>
                 <p className="mt-3 text-4xl font-semibold text-white">
-                  {progress.toFixed(0)}%
+                  {goalProgress.progressPercent.toFixed(0)}%
                 </p>
               </div>
               <div className="grid gap-2 text-sm text-slate-300 sm:text-right">
                 <p>目前資產：{formatCurrency(goalSettings.currentNetWorth)}</p>
                 <p>目標資產：{formatCurrency(goalSettings.targetNetWorth)}</p>
-                <p>距離目標還差：{formatCurrency(remainingAmount)}</p>
+                <p>
+                  距離目標還差：{formatCurrency(goalProgress.remainingAmount)}
+                </p>
               </div>
             </div>
 
             <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-800">
               <div
                 className="h-full rounded-full bg-cyan-300"
-                style={{ width: `${progress}%` }}
+                style={{ width: `${goalProgress.progressPercent}%` }}
               />
             </div>
 
@@ -108,12 +105,56 @@ function WelcomePage() {
             </p>
           </section>
 
+          <div className="grid gap-5 lg:grid-cols-2">
+            <section className="rounded-lg border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-black/20 backdrop-blur">
+              <p className="text-sm font-medium text-slate-400">
+                預期達標時間
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-white">
+                {goalEta.label}
+              </p>
+              <p className="mt-4 text-sm leading-relaxed text-slate-400">
+                {goalEta.helperText}
+              </p>
+            </section>
+
+            <section className="rounded-lg border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-black/20 backdrop-blur">
+              <p className="text-sm font-medium text-slate-400">
+                建議曝險
+              </p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <p className="text-3xl font-semibold text-white">
+                    {Math.round(goalSettings.maxExposure * 100)}%
+                  </p>
+                  <p className="mt-1 text-sm text-slate-400">
+                    最高曝險
+                  </p>
+                </div>
+                <div>
+                  <p className="text-3xl font-semibold text-cyan-100">
+                    {suggestedExposure.suggestedExposurePercent}%
+                  </p>
+                  <p className="mt-1 text-sm text-slate-400">
+                    建議目前曝險
+                  </p>
+                </div>
+              </div>
+              <p className="mt-4 text-base font-semibold text-slate-100">
+                {suggestedExposure.label}
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-400">
+                這不是市場預測，也不是買賣訊號，而是依市場風險做出的風險控管參考。
+              </p>
+            </section>
+          </div>
+
           <section className="rounded-lg border border-cyan-200/15 bg-cyan-200/[0.06] p-6 shadow-xl shadow-cyan-950/20 backdrop-blur-xl">
             <p className="text-sm font-medium text-cyan-100">
               今日提醒
             </p>
             <p className="mt-3 text-xl font-semibold leading-relaxed text-white">
-              今天不需要追逐市場。重點是維持投入、控制曝險，讓資產穩定朝目標前進。
+              目前重點不是追逐短期市場，而是維持投入、控制曝險，讓資產穩定朝目標前進。
             </p>
           </section>
         </div>

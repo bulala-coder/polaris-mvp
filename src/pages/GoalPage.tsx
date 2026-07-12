@@ -13,13 +13,19 @@ type GoalField = keyof GoalSettings
 const goalFields: Array<{
   key: GoalField
   label: string
+  isPercentInput?: boolean
 }> = [
   { key: 'currentNetWorth', label: '目前資產｜Current Net Worth' },
   { key: 'targetNetWorth', label: '目標資產｜Target Net Worth' },
   { key: 'monthlyContribution', label: '每月投入｜Monthly Contribution' },
+  {
+    key: 'maxExposure',
+    label: '最高曝險｜Max Exposure',
+    isPercentInput: true,
+  },
 ]
 
-function toSafeNumber(value: string) {
+function toSafeNumber(value: string, max?: number) {
   if (value.trim() === '') {
     return 0
   }
@@ -30,7 +36,11 @@ function toSafeNumber(value: string) {
     return 0
   }
 
-  return Math.max(0, parsedValue)
+  const nonNegativeValue = Math.max(0, parsedValue)
+
+  return typeof max === 'number'
+    ? Math.min(max, nonNegativeValue)
+    : nonNegativeValue
 }
 
 function GoalPage() {
@@ -46,10 +56,18 @@ function GoalPage() {
     writeGoalSettings(goalSettings)
   }, [goalSettings])
 
-  function updateGoalField(field: GoalField, value: string) {
+  function updateGoalField(
+    field: GoalField,
+    value: string,
+    isPercentInput?: boolean,
+  ) {
+    const safeValue = isPercentInput
+      ? toSafeNumber(value, 200) / 100
+      : toSafeNumber(value)
+
     setGoalSettings({
       ...goalSettings,
-      [field]: toSafeNumber(value),
+      [field]: safeValue,
     })
   }
 
@@ -75,7 +93,7 @@ function GoalPage() {
         </div>
 
         <section className="rounded-lg border border-white/10 bg-white/[0.07] p-6 shadow-xl shadow-cyan-950/20 backdrop-blur-xl sm:p-7">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2">
             {goalFields.map((field) => (
               <label
                 className="grid gap-2 rounded-lg border border-white/10 bg-slate-950/60 p-4"
@@ -88,14 +106,29 @@ function GoalPage() {
                   className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
                   min="0"
                   onChange={(event) =>
-                    updateGoalField(field.key, event.target.value)
+                    updateGoalField(
+                      field.key,
+                      event.target.value,
+                      field.isPercentInput,
+                    )
                   }
+                  max={field.isPercentInput ? 200 : undefined}
                   type="number"
-                  value={goalSettings[field.key]}
+                  value={
+                    field.isPercentInput
+                      ? Math.round(goalSettings[field.key] * 100)
+                      : goalSettings[field.key]
+                  }
                 />
               </label>
             ))}
           </div>
+
+          <p className="mt-5 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
+            最高曝險代表你願意承受的長期曝險上限。例如 150% 代表最高
+            1.5 倍曝險。Polaris
+            會依市場風險建議目前曝險，不代表市場預測或買賣訊號。
+          </p>
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-relaxed text-slate-400">

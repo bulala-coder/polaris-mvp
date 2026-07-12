@@ -27,7 +27,7 @@ const dataStatusItems = [
 ]
 
 const prototypeLimitItems = [
-  'v0.3.3 聚焦市場風險、資產目標距離、預期達標時間與建議曝險',
+  'v0.3.4 聚焦市場風險、資產目標距離、預期達標時間與清楚的曝險判讀',
   '尚未支援帳號登入',
   '尚未支援後端資料庫',
   '尚未支援自動更新市場資料',
@@ -57,7 +57,7 @@ function SettingsPage() {
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-400">
             Settings 用來說明 Polaris
-            的產品定位、資料狀態、版本限制與使用邊界。v0.3.3
+            的產品定位、資料狀態、版本限制與使用邊界。v0.3.4
             改為更簡化的本機原型，聚焦市場風險與資產目標距離。
           </p>
         </div>
@@ -80,7 +80,7 @@ function SettingsPage() {
           <SettingsInfoCard
             description="目前產品與技術版本。"
             items={[
-              'Polaris v0.3.3',
+              'Polaris v0.3.4',
               'Simplified local prototype',
               'React + Vite + TypeScript + Tailwind CSS',
               'Deployment：Vercel',

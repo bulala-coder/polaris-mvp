@@ -1,6 +1,6 @@
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
-import { mockMarketInput } from '../data/mockData'
+import { mockMarketInput, mockPortfolio } from '../data/mockData'
 import {
   calculateGoalProgress,
   calculateSuggestedExposure,
@@ -8,6 +8,7 @@ import {
 } from '../utils/goalCalculations'
 import { readGoalSettings } from '../utils/goalStorage'
 import { buildMarketScore } from '../utils/marketCalculations'
+import { calculatePortfolioMetrics } from '../utils/portfolioCalculations'
 import { readFromStorage, storageKeys } from '../utils/storage'
 
 function formatCurrency(value: number) {
@@ -20,7 +21,12 @@ function formatCurrency(value: number) {
 
 function WelcomePage() {
   const marketInput = readFromStorage(storageKeys.marketInput, mockMarketInput)
+  const portfolioAssets = readFromStorage(
+    storageKeys.portfolioAssets,
+    mockPortfolio.assets,
+  )
   const marketScore = buildMarketScore(marketInput)
+  const portfolio = calculatePortfolioMetrics(portfolioAssets)
   const goalSettings = readGoalSettings()
   const goalProgress = calculateGoalProgress(goalSettings)
   const goalEta = estimateTimeToGoal(goalSettings)
@@ -28,6 +34,12 @@ function WelcomePage() {
     marketRiskLevel: marketScore.marketRiskLevel,
     maxExposure: goalSettings.maxExposure,
   })
+  const currentExposurePercent = Math.round(portfolio.effectiveExposure * 100)
+  const maxExposurePercent = Math.round(goalSettings.maxExposure * 100)
+  const exposureGapMessage =
+    portfolio.effectiveExposure > suggestedExposure.suggestedExposure
+      ? '目前曝險高於建議曝險，適合暫緩加碼，優先控制風險。'
+      : '目前曝險沒有高於建議曝險，可維持紀律並依計畫投入。'
 
   return (
     <AppShell>
@@ -113,30 +125,58 @@ function WelcomePage() {
               <p className="mt-3 text-3xl font-semibold text-white">
                 {goalEta.label}
               </p>
+              <p className="mt-3 text-sm font-medium text-cyan-100">
+                預期年化報酬率：{Math.round(goalSettings.expectedAnnualReturn * 100)}%
+              </p>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                {goalEta.helperText}
+                這是根據目前資產、每月投入與預期年化報酬率估算，不代表市場預測或保證報酬。
               </p>
             </section>
 
             <section className="rounded-lg border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-black/20 backdrop-blur">
               <p className="text-sm font-medium text-slate-400">
-                建議曝險
+                曝險建議｜Exposure Guide
               </p>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div>
-                  <p className="text-3xl font-semibold text-white">
-                    {Math.round(goalSettings.maxExposure * 100)}%
-                  </p>
-                  <p className="mt-1 text-sm text-slate-400">
-                    最高曝險
+              <div className="mt-4 grid gap-3">
+                <div className="rounded-lg border border-white/10 bg-slate-950/60 p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <p className="text-sm font-medium text-slate-300">
+                      目前投資組合曝險
+                    </p>
+                    <p className="text-2xl font-semibold text-white">
+                      {currentExposurePercent}%
+                    </p>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                    這是依你的投資組合與各資產曝險倍數估算出的目前曝險。
                   </p>
                 </div>
-                <div>
-                  <p className="text-3xl font-semibold text-cyan-100">
-                    {suggestedExposure.suggestedExposurePercent}%
+
+                <div className="rounded-lg border border-white/10 bg-slate-950/60 p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <p className="text-sm font-medium text-slate-300">
+                      最高曝險上限
+                    </p>
+                    <p className="text-2xl font-semibold text-white">
+                      {maxExposurePercent}%
+                    </p>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                    這是你在目標頁設定的長期曝險上限。
                   </p>
-                  <p className="mt-1 text-sm text-slate-400">
-                    建議目前曝險
+                </div>
+
+                <div className="rounded-lg border border-cyan-200/15 bg-cyan-200/[0.06] p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <p className="text-sm font-medium text-cyan-100">
+                      建議目前曝險
+                    </p>
+                    <p className="text-2xl font-semibold text-cyan-100">
+                      {suggestedExposure.suggestedExposurePercent}%
+                    </p>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                    這是根據市場風險等級與最高曝險上限計算出的風險控管參考。
                   </p>
                 </div>
               </div>
@@ -144,7 +184,7 @@ function WelcomePage() {
                 {suggestedExposure.label}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-slate-400">
-                這不是市場預測，也不是買賣訊號，而是依市場風險做出的風險控管參考。
+                {exposureGapMessage}
               </p>
             </section>
           </div>
@@ -154,7 +194,7 @@ function WelcomePage() {
               今日提醒
             </p>
             <p className="mt-3 text-xl font-semibold leading-relaxed text-white">
-              目前重點不是追逐短期市場，而是維持投入、控制曝險，讓資產穩定朝目標前進。
+              目前重點不是追逐短期市場，而是讓曝險維持在可承受範圍內，並持續朝資產目標前進。
             </p>
           </section>
         </div>

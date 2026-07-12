@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.4 - Goal Return Rate and Exposure Clarity
+- Added expected annual return setting to Goal page
+- Updated goal ETA calculation to use monthly contribution and expected annual return
+- Added current portfolio exposure to Home page
+- Clarified Exposure Guide with current exposure, max exposure, and suggested exposure
+- Improved exposure guidance wording to avoid prediction or trading-signal language
+
 ## v0.3.3 - Goal ETA and Suggested Exposure
 - Added estimated time to asset goal
 - Added max exposure setting to Goal page

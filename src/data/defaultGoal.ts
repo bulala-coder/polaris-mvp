@@ -5,4 +5,5 @@ export const defaultGoal: GoalSettings = {
   targetNetWorth: 50000000,
   monthlyContribution: 20000,
   maxExposure: 1.5,
+  expectedAnnualReturn: 0.06,
 }

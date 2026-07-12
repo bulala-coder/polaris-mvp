@@ -14,14 +14,22 @@ const goalFields: Array<{
   key: GoalField
   label: string
   isPercentInput?: boolean
+  max?: number
 }> = [
   { key: 'currentNetWorth', label: '目前資產｜Current Net Worth' },
   { key: 'targetNetWorth', label: '目標資產｜Target Net Worth' },
   { key: 'monthlyContribution', label: '每月投入｜Monthly Contribution' },
   {
+    key: 'expectedAnnualReturn',
+    label: '預期年化報酬率｜Expected Annual Return',
+    isPercentInput: true,
+    max: 20,
+  },
+  {
     key: 'maxExposure',
     label: '最高曝險｜Max Exposure',
     isPercentInput: true,
+    max: 200,
   },
 ]
 
@@ -60,9 +68,10 @@ function GoalPage() {
     field: GoalField,
     value: string,
     isPercentInput?: boolean,
+    max?: number,
   ) {
     const safeValue = isPercentInput
-      ? toSafeNumber(value, 200) / 100
+      ? toSafeNumber(value, max) / 100
       : toSafeNumber(value)
 
     setGoalSettings({
@@ -110,9 +119,10 @@ function GoalPage() {
                       field.key,
                       event.target.value,
                       field.isPercentInput,
+                      field.max,
                     )
                   }
-                  max={field.isPercentInput ? 200 : undefined}
+                  max={field.max}
                   type="number"
                   value={
                     field.isPercentInput
@@ -125,9 +135,14 @@ function GoalPage() {
           </div>
 
           <p className="mt-5 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-            最高曝險代表你願意承受的長期曝險上限。例如 150% 代表最高
+            預期年化報酬率只是用來估算達標時間的假設，不代表市場預測或保證報酬。你可以用較保守的數字，例如
+            4%～6%。
+          </p>
+
+          <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
+            最高曝險是你願意承受的長期曝險上限，例如 150% 代表最高
             1.5 倍曝險。Polaris
-            會依市場風險建議目前曝險，不代表市場預測或買賣訊號。
+            會依市場風險建議目前曝險，但不代表買賣訊號。
           </p>
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

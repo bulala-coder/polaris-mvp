@@ -3,4 +3,5 @@ export type GoalSettings = {
   targetNetWorth: number
   monthlyContribution: number
   maxExposure: number
+  expectedAnnualReturn: number
 }

@@ -31,14 +31,6 @@ export function calculateGoalProgress(goal: GoalSettings) {
 export function estimateTimeToGoal(goal: GoalSettings) {
   const remainingAmount = goal.targetNetWorth - goal.currentNetWorth
 
-  if (goal.monthlyContribution <= 0 && remainingAmount > 0) {
-    return {
-      monthsToGoal: null,
-      label: '無法估算',
-      helperText: '目前每月投入為 0，無法用固定投入估算達標時間。',
-    }
-  }
-
   if (remainingAmount <= 0) {
     return {
       monthsToGoal: 0,
@@ -47,7 +39,41 @@ export function estimateTimeToGoal(goal: GoalSettings) {
     }
   }
 
-  const monthsToGoal = Math.ceil(remainingAmount / goal.monthlyContribution)
+  if (
+    goal.monthlyContribution <= 0 &&
+    goal.expectedAnnualReturn <= 0 &&
+    remainingAmount > 0
+  ) {
+    return {
+      monthsToGoal: null,
+      label: '無法估算',
+      helperText: '目前每月投入為 0，無法用固定投入估算達標時間。',
+    }
+  }
+
+  let monthsToGoal = Math.ceil(remainingAmount / goal.monthlyContribution)
+
+  if (goal.expectedAnnualReturn > 0) {
+    const monthlyReturn = Math.pow(1 + goal.expectedAnnualReturn, 1 / 12) - 1
+    let projectedNetWorth = goal.currentNetWorth
+    monthsToGoal = 0
+
+    while (projectedNetWorth < goal.targetNetWorth && monthsToGoal < 1200) {
+      projectedNetWorth = projectedNetWorth * (1 + monthlyReturn)
+      projectedNetWorth += goal.monthlyContribution
+      monthsToGoal += 1
+    }
+
+    if (projectedNetWorth < goal.targetNetWorth) {
+      return {
+        monthsToGoal: null,
+        label: '超過 100 年',
+        helperText:
+          '這是根據目前資產、每月投入與預期年化報酬率估算的時間。它不是市場預測，也不保證實際報酬。',
+      }
+    }
+  }
+
   const years = Math.floor(monthsToGoal / 12)
   const months = monthsToGoal % 12
   let label = `約 ${months} 個月`
@@ -62,7 +88,9 @@ export function estimateTimeToGoal(goal: GoalSettings) {
     monthsToGoal,
     label,
     helperText:
-      '這是以目前每月投入估算的靜態時間，不包含投資報酬率、通膨或市場波動。',
+      goal.expectedAnnualReturn > 0
+        ? '這是根據目前資產、每月投入與預期年化報酬率估算的時間。它不是市場預測，也不保證實際報酬。'
+        : '這是以目前每月投入估算的靜態時間，不包含投資報酬率、通膨或市場波動。',
   }
 }
 

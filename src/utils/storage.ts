@@ -3,6 +3,7 @@ export const storageKeys = {
   marketInput: 'polaris.marketInput',
   userPosition: 'polaris.userPosition',
   decisionHistory: 'polaris.decisionHistory',
+  goalSettings: 'polaris.goalSettings',
 }
 
 function getLocalStorage() {

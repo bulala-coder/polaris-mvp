@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom'
+import GoalPage from '../pages/GoalPage'
 import JournalPage from '../pages/JournalPage'
 import MarketPage from '../pages/MarketPage'
 import PortfolioPage from '../pages/PortfolioPage'
@@ -14,6 +15,10 @@ export const router = createBrowserRouter([
   {
     path: '/today',
     element: <TodayPage />,
+  },
+  {
+    path: '/goal',
+    element: <GoalPage />,
   },
   {
     path: '/portfolio',

@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.3.1
+v0.3.2
 
 ## Live Demo
 
@@ -15,7 +15,10 @@ https://github.com/bulala-coder/polaris-mvp
 ## Description
 
 Polaris is a frontend-only local prototype of a long-term investment decision system.
-It helps users review daily decisions, portfolio allocation, market risk context, and investment discipline.
+Polaris is a simplified local prototype that focuses on two questions:
+
+- What is the current market risk?
+- How far am I from my asset goal?
 
 ## Product Principle
 
@@ -23,11 +26,9 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 
 ## Current Pages
 
-- 今日決策｜Today：根據 Portfolio、Market、User Position 產生每日決策
-- 投資組合｜Portfolio：可編輯資產配置、偏離與有效曝險，並儲存在 localStorage
-- 市場風險｜Market：可編輯市場風險分數，並儲存在 localStorage
-- 反思｜Journal：投資決策反思展示，目前仍是 mock display
-- 設定｜Settings：使用者投資背景、產品邊界、資料狀態與免責聲明
+- 首頁：市場風險、資產目標進度、今日提醒
+- 目標：設定目前資產、目標資產、每月投入
+- 設定：產品邊界、資料狀態、免責聲明
 
 ## Tech Stack
 
@@ -44,6 +45,9 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Mock portfolio data
 - Mock market risk data
 - Mock journal display
+- Simplified three-page main experience
+- Home dashboard for market risk and asset goal progress
+- Goal settings saved in localStorage
 - Portfolio can be edited and saved in localStorage
 - Market data can be edited and saved in localStorage
 - User Position can be edited and saved in localStorage

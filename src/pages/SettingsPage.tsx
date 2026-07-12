@@ -1,22 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
 import SettingsInfoCard from '../components/settings/SettingsInfoCard'
 import SettingsSectionCard from '../components/settings/SettingsSectionCard'
 import SettingsStatusGrid from '../components/settings/SettingsStatusGrid'
-import UserPositionEditor from '../components/settings/UserPositionEditor'
-import { defaultUserPosition } from '../data/defaultUserPosition'
-import {
-  readFromStorage,
-  removeFromStorage,
-  storageKeys,
-  writeToStorage,
-} from '../utils/storage'
 
 const whatPolarisIs = [
-  '長期投資者的決策羅盤',
-  '協助使用者檢查投資定位、資產配置、市場風險與決策紀律',
-  '重點是幫助使用者做出一致、可解釋、符合長期策略的決策',
+  '用簡單方式看懂目前市場風險',
+  '協助使用者確認距離資產目標還有多遠',
+  '重點是讓長期投入更清楚、更安定、更可持續',
 ]
 
 const whatPolarisIsNot = [
@@ -28,20 +19,17 @@ const whatPolarisIsNot = [
 ]
 
 const dataStatusItems = [
-  { label: '投資組合資料｜Portfolio data', value: 'Mock data' },
-  { label: '市場資料｜Market data', value: 'Mock data' },
-  { label: '反思紀錄｜Journal data', value: 'Mock display' },
-  { label: '使用者投資背景｜User Position', value: 'Saved in localStorage' },
-  { label: '儲存狀態｜Storage', value: 'Frontend-only prototype' },
+  { label: '市場資料｜Market data', value: 'Local prototype data' },
+  { label: '資產目標｜Goal settings', value: 'Saved in localStorage' },
+  { label: '儲存狀態｜Storage', value: 'Frontend-only local prototype' },
   { label: '券商連線｜Brokerage connection', value: 'Not connected' },
   { label: '金融資料 API｜Financial API', value: 'Not connected' },
 ]
 
 const prototypeLimitItems = [
-  'v0.2.7 目前只展示產品流程與 UI',
-  '尚未支援真實資料輸入',
+  'v0.3.2 聚焦市場風險、資產目標距離與簡單提醒',
   '尚未支援帳號登入',
-  '尚未支援資料儲存',
+  '尚未支援後端資料庫',
   '尚未支援自動更新市場資料',
 ]
 
@@ -54,26 +42,6 @@ const disclaimerItems = [
 ]
 
 function SettingsPage() {
-  const skipNextStorageWrite = useRef(false)
-  const [userPosition, setUserPosition] = useState(() =>
-    readFromStorage(storageKeys.userPosition, { ...defaultUserPosition }),
-  )
-
-  useEffect(() => {
-    if (skipNextStorageWrite.current) {
-      skipNextStorageWrite.current = false
-      return
-    }
-
-    writeToStorage(storageKeys.userPosition, userPosition)
-  }, [userPosition])
-
-  function resetUserPosition() {
-    removeFromStorage(storageKeys.userPosition)
-    skipNextStorageWrite.current = true
-    setUserPosition({ ...defaultUserPosition })
-  }
-
   return (
     <AppShell>
       <PageContainer>
@@ -85,12 +53,12 @@ function SettingsPage() {
             設定｜Settings
           </h1>
           <p className="mt-5 text-xl leading-relaxed text-slate-300">
-            管理 Polaris 的資料狀態與產品設定
+            查看 Polaris 的產品邊界、資料狀態與版本資訊。
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-400">
             Settings 用來說明 Polaris
-            的產品定位、資料狀態、版本限制與使用邊界。v0.2.7
-            介面以繁體中文為主，並保留重要英文產品名詞。
+            的產品定位、資料狀態、版本限制與使用邊界。v0.3.2
+            改為更簡化的本機原型，聚焦市場風險與資產目標距離。
           </p>
         </div>
 
@@ -99,11 +67,6 @@ function SettingsPage() {
           <SettingsSectionCard
             title="Polaris 不是什麼"
             items={whatPolarisIsNot}
-          />
-          <UserPositionEditor
-            onReset={resetUserPosition}
-            onUserPositionChange={setUserPosition}
-            userPosition={userPosition}
           />
           <SettingsStatusGrid items={dataStatusItems} />
           <SettingsSectionCard
@@ -117,8 +80,8 @@ function SettingsPage() {
           <SettingsInfoCard
             description="目前產品與技術版本。"
             items={[
-              'Polaris v0.3.1',
-              'Frontend-only local prototype',
+              'Polaris v0.3.2',
+              'Simplified local prototype',
               'React + Vite + TypeScript + Tailwind CSS',
               'Deployment：Vercel',
               'Repository：GitHub',

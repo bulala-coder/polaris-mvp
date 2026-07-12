@@ -1,26 +1,16 @@
-import { BookOpen, Compass, Home, PieChart, Settings } from 'lucide-react'
+import { Home, Settings, Target } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
 const navigationItems = [
   {
-    label: '今日',
-    to: '/today',
+    label: '首頁',
+    to: '/',
     icon: Home,
   },
   {
-    label: '組合',
-    to: '/portfolio',
-    icon: PieChart,
-  },
-  {
-    label: '市場',
-    to: '/market',
-    icon: Compass,
-  },
-  {
-    label: '反思',
-    to: '/journal',
-    icon: BookOpen,
+    label: '目標',
+    to: '/goal',
+    icon: Target,
   },
   {
     label: '設定',
@@ -32,7 +22,7 @@ const navigationItems = [
 function BottomNavigation() {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-white/10 bg-slate-950/85 px-3 py-2 shadow-[0_-18px_50px_rgba(2,6,23,0.55)] backdrop-blur-xl">
-      <div className="mx-auto grid max-w-3xl grid-cols-5 gap-1">
+      <div className="mx-auto grid max-w-md grid-cols-3 gap-2">
         {navigationItems.map((item) => {
           const Icon = item.icon
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.2 - Simplify Core Experience
+- Simplified visible navigation to three main pages
+- Re-centered product around market risk and asset goal progress
+- Added Goal page for current net worth, target net worth, and monthly contribution
+- Updated Home page to show market risk, goal progress, and simple daily reminder
+- Reduced emphasis on Journal and Decision History in the main experience
+
 ## v0.3.1 - Save Today Decision
 - Added Save Today Decision action
 - Saved decision output to localStorage

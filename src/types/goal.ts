@@ -1,3 +1,20 @@
+export type HoldingType =
+  | 'stock'
+  | 'leveraged_stock'
+  | 'bond'
+  | 'cash'
+  | 'other'
+
+export interface PortfolioHolding {
+  id: string
+  name: string
+  amount: number
+  type: HoldingType
+  expectedAnnualReturn: number
+  exposureMultiplier: number
+  assumptionReason: string
+}
+
 export type GoalSettings = {
   currentNetWorth: number
   targetNetWorth: number
@@ -8,4 +25,5 @@ export type GoalSettings = {
   leveragedStockWeight: number
   bondWeight: number
   cashWeight: number
+  holdings: PortfolioHolding[]
 }

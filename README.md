@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.3.9
+v0.4.0
 
 ## Live Demo
 
@@ -27,7 +27,7 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 ## Current Pages
 
 - Home：市場風險、資產目標進度、投資組合預期年化報酬率、曝險建議、今日提醒
-- Settings：設定目前資產、目標資產、每月投入、資產佔比與最高曝險
+- Settings：設定目前資產、目標資產、每月投入、投資標的、資產佔比 fallback 與最高曝險
 
 ## Tech Stack
 
@@ -64,15 +64,19 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Calm, lightly humorous guidance copy
 - Buffett-Munger inspired Chinese copy tone
 - Calm, rational, lightly witty long-term investing guidance
-- Portfolio expected annual return based on asset allocation
-- Goal page supports stock, leveraged stock, bond, and cash allocation
-- Expected return is calculated from allocation and built-in long-term assumptions
+- Portfolio expected annual return can be based on holdings or allocation fallback
+- Goal page supports individual holdings plus stock, leveraged stock, bond, and cash allocation fallback
+- Expected return is calculated from holdings when available, or from allocation and built-in long-term assumptions
 - No 10-year asset projection
 - Decimal allocation input support
 - Quick allocation presets on Goal page
-- Home calculations now use Settings page total assets and allocation as the single source of truth
-- Current exposure is calculated from stock and leveraged stock allocation
-- Portfolio expected return and ETA use normalized allocation
+- Holdings-based expected return
+- Local rule-based holding assumption assistant
+- Expected return and exposure can be calculated from individual holdings
+- Falls back to allocation-based calculation if holdings are empty
+- Home calculations now use Settings page holdings first, with allocation fallback
+- Current exposure is calculated from holding exposure multipliers when holdings are available
+- Portfolio expected return and ETA use holdings first, or normalized allocation as fallback
 - Portfolio can be edited and saved in localStorage
 - Market data can be edited and saved in localStorage
 - User Position can be edited and saved in localStorage

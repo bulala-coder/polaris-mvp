@@ -10,4 +10,43 @@ export const defaultGoal: GoalSettings = {
   leveragedStockWeight: 0.4,
   bondWeight: 0.15,
   cashWeight: 0.05,
+  holdings: [
+    {
+      id: 'demo-00662',
+      name: '00662',
+      amount: 8000000,
+      type: 'stock',
+      expectedAnnualReturn: 0.06,
+      exposureMultiplier: 1,
+      assumptionReason: '以股票型 ETF 的長期報酬假設估算。',
+    },
+    {
+      id: 'demo-00631l',
+      name: '00631L',
+      amount: 8000000,
+      type: 'leveraged_stock',
+      expectedAnnualReturn: 0.08,
+      exposureMultiplier: 2,
+      assumptionReason:
+        '槓桿型股票 ETF 波動較高，以較高但更不穩定的長期假設估算。',
+    },
+    {
+      id: 'demo-00835b',
+      name: '00835B',
+      amount: 3000000,
+      type: 'bond',
+      expectedAnnualReturn: 0.03,
+      exposureMultiplier: 0,
+      assumptionReason: '以債券型 ETF 的長期報酬假設估算。',
+    },
+    {
+      id: 'demo-cash',
+      name: '現金',
+      amount: 1000000,
+      type: 'cash',
+      expectedAnnualReturn: 0.01,
+      exposureMultiplier: 0,
+      assumptionReason: '現金以低報酬、低波動假設估算。',
+    },
+  ],
 }

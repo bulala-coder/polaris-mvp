@@ -16,6 +16,9 @@ export function readGoalSettings(): GoalSettings {
   return {
     ...defaultGoal,
     ...storedGoalSettings,
+    holdings: Array.isArray(storedGoalSettings.holdings)
+      ? storedGoalSettings.holdings
+      : defaultGoal.holdings,
   }
 }
 

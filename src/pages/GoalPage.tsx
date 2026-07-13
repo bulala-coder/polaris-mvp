@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
-import type { GoalSettings } from '../types/goal'
+import type { GoalSettings, HoldingType, PortfolioHolding } from '../types/goal'
 import {
   readGoalSettings,
   resetGoalSettings,
   writeGoalSettings,
 } from '../utils/goalStorage'
+import { getHoldingsTotalValue } from '../utils/holdingCalculations'
+import { inferHoldingAssumption } from '../utils/holdingAssumptionEngine'
 
-type GoalField = keyof GoalSettings
+type GoalField =
+  | 'currentNetWorth'
+  | 'targetNetWorth'
+  | 'monthlyContribution'
+  | 'maxExposure'
 type AllocationField =
   | 'stockWeight'
   | 'leveragedStockWeight'
@@ -84,6 +90,16 @@ const allocationPresets: Array<{
     },
   },
 ]
+const holdingTypeOptions: Array<{
+  label: string
+  value: HoldingType
+}> = [
+  { label: '股票', value: 'stock' },
+  { label: '槓桿股票', value: 'leveraged_stock' },
+  { label: '債券', value: 'bond' },
+  { label: '現金', value: 'cash' },
+  { label: '其他', value: 'other' },
+]
 
 function toSafeNumber(value: string, max?: number) {
   if (value.trim() === '') {
@@ -129,6 +145,18 @@ function formatWeightForInput(weight: number): string {
   return formatPercentNumber(weight * 100)
 }
 
+function createEmptyHolding(): PortfolioHolding {
+  return {
+    id: `holding-${Date.now()}`,
+    name: '',
+    amount: 0,
+    type: 'other',
+    expectedAnnualReturn: 0.04,
+    exposureMultiplier: 0.5,
+    assumptionReason: '請輸入標的名稱，Polaris 會協助產生初始假設。',
+  }
+}
+
 function buildAllocationInputValues(goalSettings: GoalSettings) {
   return allocationFields.reduce(
     (inputValues, field) => ({
@@ -151,6 +179,7 @@ function GoalPage() {
     goalSettings.bondWeight +
     goalSettings.cashWeight
   const allocationTotalPercent = formatPercentNumber(allocationTotal * 100)
+  const holdingsTotalValue = getHoldingsTotalValue(goalSettings.holdings)
 
   useEffect(() => {
     if (skipNextStorageWrite.current) {
@@ -208,6 +237,45 @@ function GoalPage() {
 
     setGoalSettings(nextGoalSettings)
     setAllocationInputValues(buildAllocationInputValues(nextGoalSettings))
+  }
+
+  function updateHolding(
+    holdingId: string,
+    updates: Partial<PortfolioHolding>,
+  ) {
+    setGoalSettings({
+      ...goalSettings,
+      holdings: goalSettings.holdings.map((holding) =>
+        holding.id === holdingId ? { ...holding, ...updates } : holding,
+      ),
+    })
+  }
+
+  function addHolding() {
+    setGoalSettings({
+      ...goalSettings,
+      holdings: [...goalSettings.holdings, createEmptyHolding()],
+    })
+  }
+
+  function removeHolding(holdingId: string) {
+    setGoalSettings({
+      ...goalSettings,
+      holdings: goalSettings.holdings.filter(
+        (holding) => holding.id !== holdingId,
+      ),
+    })
+  }
+
+  function inferHolding(holding: PortfolioHolding) {
+    const assumption = inferHoldingAssumption(holding.name)
+
+    updateHolding(holding.id, {
+      type: assumption.type,
+      expectedAnnualReturn: assumption.expectedAnnualReturn,
+      exposureMultiplier: assumption.exposureMultiplier,
+      assumptionReason: assumption.reason,
+    })
   }
 
   function handleReset() {
@@ -269,7 +337,162 @@ function GoalPage() {
 
           <div className="mt-5">
             <h2 className="text-xl font-semibold text-white">
-              資產佔比
+              投資標的｜Holdings
+            </h2>
+            <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
+              輸入你的主要投資標的與金額。Polaris
+              會先用本機假設助手判斷類型、報酬率與曝險倍數；你可以手動修改。不要把它當神諭，這只是比較有禮貌的計算機。
+            </p>
+
+            <div className="mt-4 grid gap-4">
+              {goalSettings.holdings.map((holding) => (
+                <article
+                  className="rounded-lg border border-white/10 bg-slate-950/60 p-4"
+                  key={holding.id}
+                >
+                  <div className="grid gap-4 lg:grid-cols-2">
+                    <label className="grid gap-2">
+                      <span className="text-sm font-medium text-slate-400">
+                        名稱 / 代號
+                      </span>
+                      <input
+                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                        onChange={(event) =>
+                          updateHolding(holding.id, {
+                            name: event.target.value,
+                          })
+                        }
+                        type="text"
+                        value={holding.name}
+                      />
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-sm font-medium text-slate-400">
+                        金額
+                      </span>
+                      <input
+                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                        inputMode="decimal"
+                        min="0"
+                        onChange={(event) =>
+                          updateHolding(holding.id, {
+                            amount: toSafeNumber(event.target.value),
+                          })
+                        }
+                        type="number"
+                        value={holding.amount}
+                      />
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-sm font-medium text-slate-400">
+                        類型
+                      </span>
+                      <select
+                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                        onChange={(event) =>
+                          updateHolding(holding.id, {
+                            type: event.target.value as HoldingType,
+                          })
+                        }
+                        value={holding.type}
+                      >
+                        {holdingTypeOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-sm font-medium text-slate-400">
+                        預期年化報酬率
+                      </span>
+                      <input
+                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                        inputMode="decimal"
+                        onChange={(event) =>
+                          updateHolding(holding.id, {
+                            expectedAnnualReturn:
+                              parsePercentInput(event.target.value) / 100,
+                          })
+                        }
+                        step="0.1"
+                        type="number"
+                        value={formatPercentNumber(
+                          holding.expectedAnnualReturn * 100,
+                        )}
+                      />
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-sm font-medium text-slate-400">
+                        曝險倍數
+                      </span>
+                      <input
+                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                        inputMode="decimal"
+                        min="0"
+                        onChange={(event) =>
+                          updateHolding(holding.id, {
+                            exposureMultiplier: toSafeNumber(
+                              event.target.value,
+                              5,
+                            ),
+                          })
+                        }
+                        step="0.1"
+                        type="number"
+                        value={holding.exposureMultiplier}
+                      />
+                    </label>
+                  </div>
+
+                  <p className="mt-4 rounded-lg border border-white/10 bg-slate-950 p-3 text-sm leading-relaxed text-slate-400">
+                    {holding.assumptionReason}
+                  </p>
+
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                    <button
+                      className="rounded-lg border border-cyan-200/25 bg-cyan-200/10 px-4 py-3 text-sm font-semibold text-cyan-50 transition hover:border-cyan-100/60 hover:bg-cyan-200/15"
+                      onClick={() => inferHolding(holding)}
+                      type="button"
+                    >
+                      重新判斷
+                    </button>
+                    <button
+                      className="rounded-lg border border-red-200/20 bg-red-200/10 px-4 py-3 text-sm font-semibold text-red-100 transition hover:border-red-100/50 hover:bg-red-200/15"
+                      onClick={() => removeHolding(holding.id)}
+                      type="button"
+                    >
+                      刪除
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <button
+              className="mt-4 rounded-lg border border-cyan-200/30 bg-cyan-200/10 px-5 py-3 text-base font-semibold text-cyan-50 shadow-[0_0_32px_rgba(34,211,238,0.12)] transition hover:border-cyan-100/60 hover:bg-cyan-200/15"
+              onClick={addHolding}
+              type="button"
+            >
+              新增標的
+            </button>
+
+            {Math.abs(holdingsTotalValue - goalSettings.currentNetWorth) > 1 ? (
+              <p className="mt-4 rounded-lg border border-amber-200/20 bg-amber-200/10 p-4 text-sm leading-relaxed text-amber-100">
+                投資標的金額合計與目前總資產不同。首頁會優先使用投資標的合計。數字吵架時，Polaris
+                先相信你列出來的明細。
+              </p>
+            ) : null}
+          </div>
+
+          <div className="mt-5">
+            <h2 className="text-xl font-semibold text-white">
+              資產佔比 fallback
             </h2>
             <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
               Polaris
@@ -349,7 +572,7 @@ function GoalPage() {
               Polaris 是本機原型工具，用於投資風險整理、資產目標估算與投資組合假設報酬率顯示。它不提供個股推薦、短線交易訊號、市場預測或保證報酬。
             </p>
             <p className="mt-3 text-xs text-slate-500">
-              Polaris v0.3.9｜Simplified local prototype
+              Polaris v0.4.0｜Simplified local prototype
             </p>
           </section>
         </section>

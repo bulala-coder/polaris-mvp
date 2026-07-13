@@ -37,11 +37,17 @@ export function calculateCurrentExposureFromAllocation(
 export function calculateExposureSummary({
   goal,
   marketRiskLevel,
+  currentExposureOverride,
 }: {
   goal: GoalSettings
   marketRiskLevel: number
+  currentExposureOverride?: number
 }): ExposureSummary {
-  const currentExposure = calculateCurrentExposureFromAllocation(goal)
+  const currentExposure =
+    typeof currentExposureOverride === 'number'
+      ? currentExposureOverride
+      : calculateCurrentExposureFromAllocation(goal)
+  const usesExposureOverride = typeof currentExposureOverride === 'number'
   const maxExposure = toSafeExposure(goal.maxExposure, 1)
   const suggestedExposure = calculateSuggestedExposure({
     marketRiskLevel,
@@ -56,7 +62,8 @@ export function calculateExposureSummary({
     suggestedExposure: suggestedExposure.suggestedExposure,
     suggestedExposurePercent: suggestedExposure.suggestedExposurePercent,
     exposureGap: currentExposure - suggestedExposure.suggestedExposure,
-    helperText:
-      '目前曝險率根據你的股票與槓桿股票佔比估算：股票以 1 倍計，槓桿股票以 2 倍計，債券與現金不計入股票曝險。這是簡化估算，不是完整風險模型。',
+    helperText: usesExposureOverride
+      ? '目前曝險率根據各投資標的金額與曝險倍數加權估算。這是簡化模型，不是完整風險模型。'
+      : '目前曝險率根據你的股票與槓桿股票佔比估算：股票以 1 倍計，槓桿股票以 2 倍計，債券與現金不計入股票曝險。這是簡化估算，不是完整風險模型。',
   }
 }

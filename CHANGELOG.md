@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.4.0 - Holdings-Based Expected Return
+- Added holdings input on Settings page
+- Added local rule-based holding assumption assistant
+- Calculated expected annual return from individual holdings
+- Calculated current exposure from holding exposure multipliers
+- Used holdings as the preferred source of truth, with allocation fallback
+- Kept return assumptions editable and clearly labeled as assumptions, not forecasts
+
 ## v0.3.9 - Navigation Simplification
 - Simplified main navigation to Home and Settings
 - Renamed Goal page to Settings while keeping the /goal route

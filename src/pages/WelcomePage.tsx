@@ -8,6 +8,10 @@ import {
 } from '../utils/goalCalculations'
 import { readGoalSettings } from '../utils/goalStorage'
 import {
+  calculateHoldingsExpectedReturn,
+  calculateHoldingsExposure,
+} from '../utils/holdingCalculations'
+import {
   buildMarketScore,
   getSimpleMarketRisk,
 } from '../utils/marketCalculations'
@@ -27,15 +31,33 @@ function WelcomePage() {
   const marketScore = buildMarketScore(marketInput)
   const simpleMarketRisk = getSimpleMarketRisk(marketScore.marketRiskLevel)
   const goalSettings = readGoalSettings()
-  const portfolioExpectedReturn = calculatePortfolioExpectedReturn(goalSettings)
-  const goalProgress = calculateGoalProgress(goalSettings)
+  const holdingsExpectedReturn = calculateHoldingsExpectedReturn(
+    goalSettings.holdings,
+  )
+  const holdingsExposure = calculateHoldingsExposure(goalSettings.holdings)
+  const usesHoldings = holdingsExpectedReturn.totalValue > 0
+  const allocationExpectedReturn = calculatePortfolioExpectedReturn(goalSettings)
+  const portfolioExpectedReturn = usesHoldings
+    ? holdingsExpectedReturn
+    : allocationExpectedReturn
+  const currentNetWorth = usesHoldings
+    ? holdingsExpectedReturn.totalValue
+    : goalSettings.currentNetWorth
+  const goalForCalculations = {
+    ...goalSettings,
+    currentNetWorth,
+  }
+  const goalProgress = calculateGoalProgress(goalForCalculations)
   const goalEta = estimateTimeToGoal(
-    goalSettings,
+    goalForCalculations,
     portfolioExpectedReturn.expectedAnnualReturn,
   )
   const exposureSummary = calculateExposureSummary({
     goal: goalSettings,
     marketRiskLevel: marketScore.marketRiskLevel,
+    currentExposureOverride: usesHoldings
+      ? holdingsExposure.currentExposure
+      : undefined,
   })
   const exposureGapMessage =
     exposureSummary.currentExposure > exposureSummary.suggestedExposure
@@ -87,6 +109,9 @@ function WelcomePage() {
               </div>
               <div className="grid gap-2 text-sm text-slate-300 sm:text-right">
                 <p>目前資產：{formatCurrency(goalSettings.currentNetWorth)}</p>
+                {usesHoldings ? (
+                  <p>標的合計：{formatCurrency(currentNetWorth)}</p>
+                ) : null}
                 <p>目標資產：{formatCurrency(goalSettings.targetNetWorth)}</p>
                 <p>
                   距離目標還差：{formatCurrency(goalProgress.remainingAmount)}
@@ -133,42 +158,72 @@ function WelcomePage() {
               <div className="mt-4 grid gap-2 text-sm text-slate-300">
                 <p>
                   目前總資產：
-                  {formatCurrency(goalSettings.currentNetWorth)}
+                  {formatCurrency(currentNetWorth)}
                 </p>
-                <p>
-                  股票佔比：
-                  {Math.round(
-                    portfolioExpectedReturn.normalizedWeights.stockWeight * 100,
-                  )}
-                  %
-                </p>
-                <p>
-                  槓桿股票佔比：
-                  {Math.round(
-                    portfolioExpectedReturn.normalizedWeights
-                      .leveragedStockWeight * 100,
-                  )}
-                  %
-                </p>
-                <p>
-                  債券佔比：
-                  {Math.round(
-                    portfolioExpectedReturn.normalizedWeights.bondWeight * 100,
-                  )}
-                  %
-                </p>
-                <p>
-                  現金佔比：
-                  {Math.round(
-                    portfolioExpectedReturn.normalizedWeights.cashWeight * 100,
-                  )}
-                  %
-                </p>
+                <p>資料來源：{usesHoldings ? '投資標的明細' : '資產配置佔比'}</p>
+                {usesHoldings ? (
+                  holdingsExpectedReturn.weightedHoldings
+                    .slice(0, 4)
+                    .map((holding) => {
+                      const matchedHolding = goalSettings.holdings.find(
+                        (item) => item.id === holding.id,
+                      )
+
+                      return (
+                        <p key={holding.id}>
+                          {holding.name || '未命名標的'}：
+                          {formatCurrency(matchedHolding?.amount ?? 0)}，
+                          權重 {Math.round(holding.weight * 100)}%，預期{' '}
+                          {(holding.expectedAnnualReturn * 100).toFixed(1)}%，曝險{' '}
+                          {matchedHolding?.exposureMultiplier ?? 0}x
+                        </p>
+                      )
+                    })
+                ) : (
+                  <>
+                    <p>
+                      股票佔比：
+                      {Math.round(
+                        allocationExpectedReturn.normalizedWeights.stockWeight *
+                          100,
+                      )}
+                      %
+                    </p>
+                    <p>
+                      槓桿股票佔比：
+                      {Math.round(
+                        allocationExpectedReturn.normalizedWeights
+                          .leveragedStockWeight * 100,
+                      )}
+                      %
+                    </p>
+                    <p>
+                      債券佔比：
+                      {Math.round(
+                        allocationExpectedReturn.normalizedWeights.bondWeight *
+                          100,
+                      )}
+                      %
+                    </p>
+                    <p>
+                      現金佔比：
+                      {Math.round(
+                        allocationExpectedReturn.normalizedWeights.cashWeight *
+                          100,
+                      )}
+                      %
+                    </p>
+                  </>
+                )}
+                {usesHoldings && goalSettings.holdings.length > 4 ? (
+                  <p>另有 {goalSettings.holdings.length - 4} 個標的未列出。</p>
+                ) : null}
               </div>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
                 {portfolioExpectedReturn.helperText}
               </p>
-              {portfolioExpectedReturn.wasNormalized ? (
+              {'wasNormalized' in portfolioExpectedReturn &&
+              portfolioExpectedReturn.wasNormalized ? (
                 <p className="mt-3 rounded-lg border border-amber-200/20 bg-amber-200/10 p-3 text-sm leading-relaxed text-amber-100">
                   佔比合計不是 100%，已正規化後估算。
                 </p>

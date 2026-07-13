@@ -12,6 +12,7 @@ import {
   getSimpleMarketRisk,
 } from '../utils/marketCalculations'
 import { calculatePortfolioMetrics } from '../utils/portfolioCalculations'
+import { calculateTenYearProjection } from '../utils/projectionCalculations'
 import { readFromStorage, storageKeys } from '../utils/storage'
 
 function formatCurrency(value: number) {
@@ -37,6 +38,11 @@ function WelcomePage() {
   const suggestedExposure = calculateSuggestedExposure({
     marketRiskLevel: marketScore.marketRiskLevel,
     maxExposure: goalSettings.maxExposure,
+  })
+  const tenYearProjection = calculateTenYearProjection({
+    startingValue: portfolio.totalValue,
+    monthlyContribution: goalSettings.monthlyContribution,
+    expectedAnnualReturn: goalSettings.expectedAnnualReturn,
   })
   const currentExposurePercent = Math.round(portfolio.effectiveExposure * 100)
   const maxExposurePercent = Math.round(goalSettings.maxExposure * 100)
@@ -126,6 +132,42 @@ function WelcomePage() {
               </p>
             </section>
 
+            <section className="rounded-lg border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-black/20 backdrop-blur">
+              <p className="text-sm font-medium text-slate-400">
+                10 年資產估算｜10-Year Projection
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-white">
+                {formatCurrency(tenYearProjection.projectedValue)}
+              </p>
+              <div className="mt-4 grid gap-2 text-sm text-slate-300">
+                <p>
+                  目前投資組合：
+                  {formatCurrency(tenYearProjection.startingValue)}
+                </p>
+                <p>
+                  每月投入：
+                  {formatCurrency(tenYearProjection.monthlyContribution)}
+                </p>
+                <p>
+                  預期年化報酬率：
+                  {tenYearProjection.annualizedReturnPercent.toFixed(0)}%
+                </p>
+                <p>
+                  10 年總投入：
+                  {formatCurrency(tenYearProjection.totalContribution)}
+                </p>
+                <p>
+                  估算投資增益：
+                  {formatCurrency(tenYearProjection.estimatedGain)}
+                </p>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-slate-400">
+                {tenYearProjection.helperText}
+              </p>
+            </section>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-2">
             <section className="rounded-lg border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-black/20 backdrop-blur">
               <p className="text-sm font-medium text-slate-400">
                 曝險建議｜Exposure Guide

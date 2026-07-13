@@ -135,7 +135,8 @@ function GoalPage() {
           </div>
 
           <p className="mt-5 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-            這只是估算用假設，不是承諾。保守一點通常比較無聊，但投資裡很多好事本來就很無聊。
+            這只是估算用假設，不是承諾。保守一點通常比較無聊，但投資裡很多好事本來就很無聊。這個數字會同時用於預期達標時間與
+            10 年資產估算。
           </p>
 
           <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">

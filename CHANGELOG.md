@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.8 - 10-Year Simple Projection
+- Added simplified 10-year asset projection
+- Used total portfolio value, monthly contribution, and overall expected annual return
+- Avoided per-asset return assumptions to keep the product simple
+- Displayed projected value, total contribution, and estimated gain on Home page
+
 ## v0.3.7 - Buffett-Munger Inspired Copy Tone
 - Updated Home page copy with a calmer, wiser, and more memorable long-term investing tone
 - Made market risk, ETA, and exposure guidance more human-friendly

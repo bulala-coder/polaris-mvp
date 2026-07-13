@@ -11,6 +11,7 @@ import {
   calculateHoldingsExpectedReturn,
   calculateHoldingsExposure,
 } from '../utils/holdingCalculations'
+import { calculateHoldingMarketValue } from '../utils/holdingValueCalculations'
 import {
   buildMarketScore,
   getSimpleMarketRisk,
@@ -24,6 +25,18 @@ function formatCurrency(value: number) {
     currency: 'TWD',
     maximumFractionDigits: 0,
   }).format(value)
+}
+
+function getReturnSourceLabel(source?: string) {
+  if (source === 'historical_data') {
+    return '歷史價格'
+  }
+
+  if (source === 'manual') {
+    return '手動'
+  }
+
+  return '本機假設'
 }
 
 function WelcomePage() {
@@ -172,10 +185,23 @@ function WelcomePage() {
                       return (
                         <p key={holding.id}>
                           {holding.name || '未命名標的'}：
-                          {formatCurrency(matchedHolding?.amount ?? 0)}，
+                          {formatCurrency(
+                            calculateHoldingMarketValue({
+                              shares: matchedHolding?.shares,
+                              currentPrice: matchedHolding?.currentPrice,
+                              fallbackAmount: matchedHolding?.amount,
+                            }),
+                          )}
+                          ，
                           權重 {Math.round(holding.weight * 100)}%，預期{' '}
                           {(holding.expectedAnnualReturn * 100).toFixed(1)}%，曝險{' '}
-                          {matchedHolding?.exposureMultiplier ?? 0}x
+                          {holding.exposureMultiplier ?? 0}x，來源{' '}
+                          {getReturnSourceLabel(holding.returnSource)}
+                          {holding.historicalReturnYears
+                            ? `｜約 ${holding.historicalReturnYears.toFixed(
+                                1,
+                              )} 年歷史`
+                            : ''}
                         </p>
                       )
                     })
@@ -220,7 +246,9 @@ function WelcomePage() {
                 ) : null}
               </div>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                {portfolioExpectedReturn.helperText}
+                {usesHoldings
+                  ? '投報率優先使用你抓取的歷史價格年化結果；若沒有歷史資料，則使用手動或本機假設報酬率。這不是預測，也不是保證。'
+                  : portfolioExpectedReturn.helperText}
               </p>
               {'wasNormalized' in portfolioExpectedReturn &&
               portfolioExpectedReturn.wasNormalized ? (

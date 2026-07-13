@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.4.1 - Historical Return Data Integration
+- Added market symbol normalization
+- Added Yahoo Finance chart data fetch utility
+- Added historical annualized return calculation from price history
+- Added holdings support for shares, current price, market value, and return source
+- Updated holdings expected return to prefer historical return when available
+- Preserved manual fallback when data fetch fails
+
 ## v0.4.0 - Holdings-Based Expected Return
 - Added holdings input on Settings page
 - Added local rule-based holding assumption assistant

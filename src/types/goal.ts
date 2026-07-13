@@ -13,6 +13,14 @@ export interface PortfolioHolding {
   expectedAnnualReturn: number
   exposureMultiplier: number
   assumptionReason: string
+  shares?: number
+  currentPrice?: number
+  priceUpdatedAt?: string
+  returnSource?: 'rule_based' | 'manual' | 'historical_data'
+  historicalAnnualReturn?: number
+  historicalReturnYears?: number
+  historicalDataSource?: string
+  historicalDataError?: string
 }
 
 export type GoalSettings = {

@@ -7,8 +7,11 @@ import {
   resetGoalSettings,
   writeGoalSettings,
 } from '../utils/goalStorage'
+import { calculateAnnualizedReturnFromPrices } from '../utils/historicalReturnCalculations'
 import { getHoldingsTotalValue } from '../utils/holdingCalculations'
 import { inferHoldingAssumption } from '../utils/holdingAssumptionEngine'
+import { calculateHoldingMarketValue } from '../utils/holdingValueCalculations'
+import { fetchYahooChart } from '../utils/yahooFinanceClient'
 
 type GoalField =
   | 'currentNetWorth'
@@ -145,6 +148,28 @@ function formatWeightForInput(weight: number): string {
   return formatPercentNumber(weight * 100)
 }
 
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat('zh-TW', {
+    style: 'currency',
+    currency: 'TWD',
+    maximumFractionDigits: 0,
+  }).format(value)
+}
+
+function getReturnSourceLabel(
+  source: PortfolioHolding['returnSource'],
+): string {
+  if (source === 'historical_data') {
+    return '歷史價格'
+  }
+
+  if (source === 'manual') {
+    return '手動'
+  }
+
+  return '本機假設'
+}
+
 function createEmptyHolding(): PortfolioHolding {
   return {
     id: `holding-${Date.now()}`,
@@ -153,6 +178,7 @@ function createEmptyHolding(): PortfolioHolding {
     type: 'other',
     expectedAnnualReturn: 0.04,
     exposureMultiplier: 0.5,
+    returnSource: 'rule_based',
     assumptionReason: '請輸入標的名稱，Polaris 會協助產生初始假設。',
   }
 }
@@ -170,6 +196,7 @@ function buildAllocationInputValues(goalSettings: GoalSettings) {
 function GoalPage() {
   const skipNextStorageWrite = useRef(false)
   const [goalSettings, setGoalSettings] = useState(() => readGoalSettings())
+  const [fetchingHoldingIds, setFetchingHoldingIds] = useState<string[]>([])
   const [allocationInputValues, setAllocationInputValues] = useState(() =>
     buildAllocationInputValues(readGoalSettings()),
   )
@@ -274,8 +301,56 @@ function GoalPage() {
       type: assumption.type,
       expectedAnnualReturn: assumption.expectedAnnualReturn,
       exposureMultiplier: assumption.exposureMultiplier,
+      returnSource: 'rule_based',
+      historicalDataError: '',
       assumptionReason: assumption.reason,
     })
+  }
+
+  async function fetchHistoricalDataForHolding(holding: PortfolioHolding) {
+    if (fetchingHoldingIds.includes(holding.id)) {
+      return
+    }
+
+    setFetchingHoldingIds((holdingIds) => [...holdingIds, holding.id])
+
+    try {
+      const prices = await fetchYahooChart(holding.name)
+      const result = calculateAnnualizedReturnFromPrices(prices)
+
+      if (!result) {
+        throw new Error('Unable to calculate historical return.')
+      }
+
+      const amount = calculateHoldingMarketValue({
+        shares: holding.shares,
+        currentPrice: result.latestPrice,
+        fallbackAmount: holding.amount,
+      })
+
+      updateHolding(holding.id, {
+        currentPrice: result.latestPrice,
+        amount,
+        historicalAnnualReturn: result.annualizedReturn,
+        expectedAnnualReturn: result.annualizedReturn,
+        returnSource: 'historical_data',
+        historicalReturnYears: result.years,
+        historicalDataSource: 'Yahoo Finance chart',
+        priceUpdatedAt: result.latestDate,
+        historicalDataError: '',
+        assumptionReason:
+          '依可取得歷史價格計算年化報酬率，通常不含配息再投入。',
+      })
+    } catch {
+      updateHolding(holding.id, {
+        historicalDataError:
+          '資料抓取失敗，請手動輸入。目前資料來源可能暫時拒絕連線，或代號格式不支援。',
+      })
+    } finally {
+      setFetchingHoldingIds((holdingIds) =>
+        holdingIds.filter((holdingId) => holdingId !== holding.id),
+      )
+    }
   }
 
   function handleReset() {
@@ -340,8 +415,9 @@ function GoalPage() {
               投資標的｜Holdings
             </h2>
             <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-              輸入你的主要投資標的與金額。Polaris
-              會先用本機假設助手判斷類型、報酬率與曝險倍數；你可以手動修改。不要把它當神諭，這只是比較有禮貌的計算機。
+              輸入你的主要投資標的、持有股數與價格。Polaris
+              可以嘗試抓取歷史價格來計算過去年化報酬率；抓不到時仍可手動輸入。歷史報酬不是未來保證，市場不是
+              Netflix，不一定會照上一季劇情演。
             </p>
 
             <div className="mt-4 grid gap-4">
@@ -369,7 +445,58 @@ function GoalPage() {
 
                     <label className="grid gap-2">
                       <span className="text-sm font-medium text-slate-400">
-                        金額
+                        持有股數
+                      </span>
+                      <input
+                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                        inputMode="decimal"
+                        min="0"
+                        onChange={(event) => {
+                          const shares = toSafeNumber(event.target.value)
+
+                          updateHolding(holding.id, {
+                            shares,
+                            amount: calculateHoldingMarketValue({
+                              shares,
+                              currentPrice: holding.currentPrice,
+                              fallbackAmount: holding.amount,
+                            }),
+                          })
+                        }}
+                        type="number"
+                        value={holding.shares ?? ''}
+                      />
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-sm font-medium text-slate-400">
+                        目前價格
+                      </span>
+                      <input
+                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                        inputMode="decimal"
+                        min="0"
+                        onChange={(event) => {
+                          const currentPrice = toSafeNumber(event.target.value)
+
+                          updateHolding(holding.id, {
+                            currentPrice,
+                            amount: calculateHoldingMarketValue({
+                              shares: holding.shares,
+                              currentPrice,
+                              fallbackAmount: holding.amount,
+                            }),
+                          })
+                        }}
+                        step="0.01"
+                        type="number"
+                        value={holding.currentPrice ?? ''}
+                      />
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-sm font-medium text-slate-400">
+                        目前市值
                       </span>
                       <input
                         className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
@@ -383,6 +510,17 @@ function GoalPage() {
                         type="number"
                         value={holding.amount}
                       />
+                      <span className="text-xs text-slate-500">
+                        {holding.shares && holding.currentPrice
+                          ? `依股數 × 價格估算：${formatCurrency(
+                              calculateHoldingMarketValue({
+                                shares: holding.shares,
+                                currentPrice: holding.currentPrice,
+                                fallbackAmount: holding.amount,
+                              }),
+                            )}`
+                          : '可手動輸入；若填入股數與價格，Polaris 會自動估算。'}
+                      </span>
                     </label>
 
                     <label className="grid gap-2">
@@ -417,6 +555,7 @@ function GoalPage() {
                           updateHolding(holding.id, {
                             expectedAnnualReturn:
                               parsePercentInput(event.target.value) / 100,
+                            returnSource: 'manual',
                           })
                         }
                         step="0.1"
@@ -448,11 +587,33 @@ function GoalPage() {
                         value={holding.exposureMultiplier}
                       />
                     </label>
+
+                    <div className="grid gap-2 rounded-lg border border-white/10 bg-slate-950 p-3">
+                      <span className="text-sm font-medium text-slate-400">
+                        報酬率來源
+                      </span>
+                      <p className="text-base font-semibold text-cyan-100">
+                        {getReturnSourceLabel(holding.returnSource)}
+                      </p>
+                      {holding.historicalReturnYears ? (
+                        <p className="text-xs text-slate-500">
+                          約 {holding.historicalReturnYears.toFixed(1)} 年歷史
+                          {holding.priceUpdatedAt
+                            ? `｜價格日期 ${holding.priceUpdatedAt.slice(0, 10)}`
+                            : ''}
+                        </p>
+                      ) : null}
+                    </div>
                   </div>
 
                   <p className="mt-4 rounded-lg border border-white/10 bg-slate-950 p-3 text-sm leading-relaxed text-slate-400">
                     {holding.assumptionReason}
                   </p>
+                  {holding.historicalDataError ? (
+                    <p className="mt-3 rounded-lg border border-amber-200/20 bg-amber-200/10 p-3 text-sm leading-relaxed text-amber-100">
+                      {holding.historicalDataError}
+                    </p>
+                  ) : null}
 
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                     <button
@@ -461,6 +622,16 @@ function GoalPage() {
                       type="button"
                     >
                       重新判斷
+                    </button>
+                    <button
+                      className="rounded-lg border border-cyan-200/25 bg-cyan-200/10 px-4 py-3 text-sm font-semibold text-cyan-50 transition hover:border-cyan-100/60 hover:bg-cyan-200/15 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={fetchingHoldingIds.includes(holding.id)}
+                      onClick={() => fetchHistoricalDataForHolding(holding)}
+                      type="button"
+                    >
+                      {fetchingHoldingIds.includes(holding.id)
+                        ? '抓取中...'
+                        : '抓取歷史資料'}
                     </button>
                     <button
                       className="rounded-lg border border-red-200/20 bg-red-200/10 px-4 py-3 text-sm font-semibold text-red-100 transition hover:border-red-100/50 hover:bg-red-200/15"
@@ -572,7 +743,7 @@ function GoalPage() {
               Polaris 是本機原型工具，用於投資風險整理、資產目標估算與投資組合假設報酬率顯示。它不提供個股推薦、短線交易訊號、市場預測或保證報酬。
             </p>
             <p className="mt-3 text-xs text-slate-500">
-              Polaris v0.4.0｜Simplified local prototype
+              Polaris v0.4.1｜Simplified local prototype
             </p>
           </section>
         </section>

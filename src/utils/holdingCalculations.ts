@@ -1,4 +1,5 @@
 import type { PortfolioHolding } from '../types/goal'
+import { normalizeHoldingValue } from './holdingValueCalculations'
 
 function toPositiveNumber(value: number) {
   if (!Number.isFinite(value) || Number.isNaN(value)) {
@@ -10,9 +11,22 @@ function toPositiveNumber(value: number) {
 
 export function getHoldingsTotalValue(holdings: PortfolioHolding[]): number {
   return holdings.reduce(
-    (totalValue, holding) => totalValue + toPositiveNumber(holding.amount),
+    (totalValue, holding) =>
+      totalValue + toPositiveNumber(normalizeHoldingValue(holding).amount),
     0,
   )
+}
+
+function getHoldingExpectedAnnualReturn(holding: PortfolioHolding): number {
+  if (
+    holding.returnSource === 'historical_data' &&
+    typeof holding.historicalAnnualReturn === 'number' &&
+    Number.isFinite(holding.historicalAnnualReturn)
+  ) {
+    return holding.historicalAnnualReturn
+  }
+
+  return toPositiveNumber(holding.expectedAnnualReturn)
 }
 
 export function calculateHoldingsExpectedReturn(
@@ -32,12 +46,11 @@ export function calculateHoldingsExpectedReturn(
   }
 
   const weightedHoldings = holdings
+    .map(normalizeHoldingValue)
     .filter((holding) => toPositiveNumber(holding.amount) > 0)
     .map((holding) => {
       const amount = toPositiveNumber(holding.amount)
-      const expectedAnnualReturn = toPositiveNumber(
-        holding.expectedAnnualReturn,
-      )
+      const expectedAnnualReturn = getHoldingExpectedAnnualReturn(holding)
       const weight = amount / totalValue
 
       return {
@@ -45,6 +58,9 @@ export function calculateHoldingsExpectedReturn(
         name: holding.name,
         weight,
         expectedAnnualReturn,
+        returnSource: holding.returnSource,
+        historicalReturnYears: holding.historicalReturnYears,
+        exposureMultiplier: holding.exposureMultiplier,
         contributionToReturn: weight * expectedAnnualReturn,
       }
     })
@@ -76,12 +92,14 @@ export function calculateHoldingsExposure(holdings: PortfolioHolding[]) {
     }
   }
 
-  const currentExposure = holdings.reduce((totalExposure, holding) => {
-    const amount = toPositiveNumber(holding.amount)
-    const exposureMultiplier = toPositiveNumber(holding.exposureMultiplier)
+  const currentExposure = holdings
+    .map(normalizeHoldingValue)
+    .reduce((totalExposure, holding) => {
+      const amount = toPositiveNumber(holding.amount)
+      const exposureMultiplier = toPositiveNumber(holding.exposureMultiplier)
 
-    return totalExposure + (amount / totalValue) * exposureMultiplier
-  }, 0)
+      return totalExposure + (amount / totalValue) * exposureMultiplier
+    }, 0)
 
   return {
     totalValue,

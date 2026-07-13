@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.4.0
+v0.4.1
 
 ## Live Demo
 
@@ -74,6 +74,10 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Local rule-based holding assumption assistant
 - Expected return and exposure can be calculated from individual holdings
 - Falls back to allocation-based calculation if holdings are empty
+- Holdings can fetch historical price data
+- Historical annualized return can be calculated from available price history
+- Current market value can be calculated from shares × latest price
+- Falls back to manual/rule-based returns if data fetch fails
 - Home calculations now use Settings page holdings first, with allocation fallback
 - Current exposure is calculated from holding exposure multipliers when holdings are available
 - Portfolio expected return and ETA use holdings first, or normalized allocation as fallback

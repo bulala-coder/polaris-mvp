@@ -3,7 +3,6 @@ import GoalPage from '../pages/GoalPage'
 import JournalPage from '../pages/JournalPage'
 import MarketPage from '../pages/MarketPage'
 import PortfolioPage from '../pages/PortfolioPage'
-import SettingsPage from '../pages/SettingsPage'
 import TodayPage from '../pages/TodayPage'
 import WelcomePage from '../pages/WelcomePage'
 
@@ -31,9 +30,5 @@ export const router = createBrowserRouter([
   {
     path: '/journal',
     element: <JournalPage />,
-  },
-  {
-    path: '/settings',
-    element: <SettingsPage />,
   },
 ])

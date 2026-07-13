@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.9 - Navigation Simplification
+- Simplified main navigation to Home and Settings
+- Renamed Goal page to Settings while keeping the /goal route
+- Removed the old standalone Settings page from the main app
+- Moved product boundary and disclaimer copy into the Settings page
+
+## v0.3.9 - Improve Allocation Inputs
+- Improved asset allocation inputs to support decimals
+- Added quick allocation presets on Goal page
+- Kept allocation values stored as normalized decimal weights
+- Preserved portfolio expected return and ETA calculations
+
 ## v0.3.8 - Portfolio Expected Return
 - Replaced 10-year asset projection with portfolio expected annual return
 - Added asset allocation inputs for stock, leveraged stock, bond, and cash

@@ -174,7 +174,7 @@ function WelcomePage() {
                 </p>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                這是依你在目標頁填寫的資產佔比，加上 Polaris
+                這是依你在設定頁填寫的資產佔比，加上 Polaris
                 內建長期假設算出的加權結果。它不是市場預測，也不是保證報酬；如果市場會乖乖照
                 Excel 表演出，世界上就不需要風險管理了。
               </p>
@@ -211,7 +211,7 @@ function WelcomePage() {
                     </p>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                    這是你在目標頁設定的長期曝險上限，像是你願意接受的最高巡航速度。
+                    這是你在設定頁設定的長期曝險上限，像是你願意接受的最高巡航速度。
                   </p>
                 </div>
 

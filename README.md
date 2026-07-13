@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.3.8
+v0.3.9
 
 ## Live Demo
 
@@ -26,9 +26,8 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 
 ## Current Pages
 
-- 首頁：市場風險、資產目標進度、今日提醒
-- 目標：設定目前資產、目標資產、每月投入
-- 設定：產品邊界、資料狀態、免責聲明
+- Home：市場風險、資產目標進度、投資組合預期年化報酬率、曝險建議、今日提醒
+- Settings：設定目前資產、目標資產、每月投入、資產佔比與最高曝險
 
 ## Tech Stack
 
@@ -45,7 +44,11 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Mock portfolio data
 - Mock market risk data
 - Mock journal display
-- Simplified three-page main experience
+- Simplified two-page main experience
+- Two-tab navigation: Home and Settings
+- Goal page renamed to Settings
+- Old standalone Settings page removed from main app
+- Product boundary moved into Settings page
 - Home dashboard for market risk and asset goal progress
 - Goal settings saved in localStorage
 - Goal ETA estimate
@@ -65,6 +68,8 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Goal page supports stock, leveraged stock, bond, and cash allocation
 - Expected return is calculated from allocation and built-in long-term assumptions
 - No 10-year asset projection
+- Decimal allocation input support
+- Quick allocation presets on Goal page
 - Portfolio can be edited and saved in localStorage
 - Market data can be edited and saved in localStorage
 - User Position can be edited and saved in localStorage

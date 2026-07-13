@@ -354,8 +354,8 @@ function GoalPage() {
               投資標的｜Holdings
             </h2>
             <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-              輸入你的主要投資標的、持有股數、目前股價、預期年化報酬率與曝險倍數。現金直接填金額；股票、ETF、債券則用股數
-              × 目前股價計算市值。現金不用假裝自己有股數，它已經夠安靜了。
+              先選類型，再輸入標的資料。現金直接填金額；股票、ETF、債券則用股數
+              × 目前股價計算市值。順序很重要，連計算機也不喜歡先猜題目。
             </p>
 
             <div className="mt-4 grid gap-4">
@@ -378,7 +378,29 @@ function GoalPage() {
                   <div className="grid gap-4 lg:grid-cols-2">
                     <label className="grid gap-2">
                       <span className="text-sm font-medium text-slate-400">
-                        名稱 / 代號
+                        類型
+                      </span>
+                      <select
+                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                        onChange={(event) =>
+                          updateHoldingType(
+                            holding,
+                            event.target.value as HoldingType,
+                          )
+                        }
+                        value={holding.type}
+                      >
+                        {holdingTypeOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-sm font-medium text-slate-400">
+                        {holding.type === 'cash' ? '名稱' : '名稱 / 代號'}
                       </span>
                       <input
                         className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
@@ -491,28 +513,6 @@ function GoalPage() {
                           : '由持有股數 × 目前股價自動計算，不需要連網。'}
                       </span>
                     </div>
-
-                    <label className="grid gap-2">
-                      <span className="text-sm font-medium text-slate-400">
-                        類型
-                      </span>
-                      <select
-                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
-                        onChange={(event) =>
-                          updateHoldingType(
-                            holding,
-                            event.target.value as HoldingType,
-                          )
-                        }
-                        value={holding.type}
-                      >
-                        {holdingTypeOptions.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
 
                     <label className="grid gap-2">
                       <span className="text-sm font-medium text-slate-400">
@@ -680,7 +680,7 @@ function GoalPage() {
               Polaris 是本機原型工具，用於投資風險整理、資產目標估算與投資組合假設報酬率顯示。它不提供個股推薦、短線交易訊號、市場預測或保證報酬。
             </p>
             <p className="mt-3 text-xs text-slate-500">
-              Polaris v0.4.4｜Simplified local prototype
+              Polaris v0.4.5｜Simplified local prototype
             </p>
           </section>
         </section>

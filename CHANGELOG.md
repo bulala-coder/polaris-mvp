@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.5 - Holdings Form Order Polish
+- Moved holding type above name/code in the Settings form
+- Made cash and non-cash input flows clearer
+- Preserved local manual return and market value calculations
+
 ## v0.4.4 - Clean Default State
 - Removed demo holdings from the default state
 - Set default goal, contribution, allocation, and return assumptions to zero

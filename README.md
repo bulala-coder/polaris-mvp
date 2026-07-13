@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.4.4
+v0.4.5
 
 ## Live Demo
 
@@ -80,6 +80,8 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - No demo holdings by default
 - New users start with empty holdings and zero values
 - Users must enter their own assumptions
+- Holdings form now asks for type before name/code
+- Cash and non-cash input flows are clearer
 - No external market data fetch
 - No AI return estimation
 - Expected return and exposure can be calculated from individual holdings

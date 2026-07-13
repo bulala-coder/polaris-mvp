@@ -20,6 +20,12 @@ type AllocationField =
   | 'leveragedStockWeight'
   | 'bondWeight'
   | 'cashWeight'
+type HoldingDecimalField =
+  | 'amount'
+  | 'shares'
+  | 'currentPrice'
+  | 'expectedAnnualReturn'
+  | 'exposureMultiplier'
 
 const goalFields: Array<{
   key: GoalField
@@ -119,6 +125,20 @@ function toSafeNumber(value: string, max?: number) {
     : nonNegativeValue
 }
 
+function parseDecimalInput(value: string): number {
+  const parsedValue = Number(value)
+
+  if (!Number.isFinite(parsedValue) || parsedValue < 0) {
+    return 0
+  }
+
+  return parsedValue
+}
+
+function isDecimalInput(value: string): boolean {
+  return /^\d*\.?\d*$/.test(value)
+}
+
 function parsePercentInput(value: string): number {
   if (value.trim() === '') {
     return 0
@@ -143,6 +163,17 @@ function formatPercentNumber(value: number): string {
 
 function formatWeightForInput(weight: number): string {
   return formatPercentNumber(weight * 100)
+}
+
+function formatHoldingDecimalForInput(
+  holding: PortfolioHolding,
+  field: HoldingDecimalField,
+): string {
+  if (field === 'expectedAnnualReturn') {
+    return formatPercentNumber(holding.expectedAnnualReturn * 100)
+  }
+
+  return String(holding[field] ?? 0)
 }
 
 function formatCurrency(value: number) {
@@ -181,6 +212,9 @@ function buildAllocationInputValues(goalSettings: GoalSettings) {
 function GoalPage() {
   const skipNextStorageWrite = useRef(false)
   const [goalSettings, setGoalSettings] = useState(() => readGoalSettings())
+  const [holdingInputValues, setHoldingInputValues] = useState<
+    Record<string, Partial<Record<HoldingDecimalField, string>>>
+  >({})
   const [allocationInputValues, setAllocationInputValues] = useState(() =>
     buildAllocationInputValues(readGoalSettings()),
   )
@@ -218,7 +252,7 @@ function GoalPage() {
   }
 
   function updateAllocationInput(field: AllocationField, value: string) {
-    if (/^\d*\.?\d*$/.test(value)) {
+    if (isDecimalInput(value)) {
       setAllocationInputValues({
         ...allocationInputValues,
         [field]: value,
@@ -260,6 +294,125 @@ function GoalPage() {
         holding.id === holdingId ? { ...holding, ...updates } : holding,
       ),
     })
+  }
+
+  function getHoldingInputValue(
+    holding: PortfolioHolding,
+    field: HoldingDecimalField,
+  ) {
+    return (
+      holdingInputValues[holding.id]?.[field] ??
+      formatHoldingDecimalForInput(holding, field)
+    )
+  }
+
+  function setHoldingInputValue(
+    holdingId: string,
+    field: HoldingDecimalField,
+    value: string,
+  ) {
+    setHoldingInputValues({
+      ...holdingInputValues,
+      [holdingId]: {
+        ...holdingInputValues[holdingId],
+        [field]: value,
+      },
+    })
+  }
+
+  function clearHoldingInputValue(
+    holdingId: string,
+    field: HoldingDecimalField,
+  ) {
+    const nextHoldingInputValues = {
+      ...holdingInputValues,
+      [holdingId]: {
+        ...holdingInputValues[holdingId],
+      },
+    }
+
+    delete nextHoldingInputValues[holdingId][field]
+
+    if (Object.keys(nextHoldingInputValues[holdingId]).length === 0) {
+      delete nextHoldingInputValues[holdingId]
+    }
+
+    setHoldingInputValues(nextHoldingInputValues)
+  }
+
+  function updateHoldingDecimalInput(
+    holding: PortfolioHolding,
+    field: HoldingDecimalField,
+    value: string,
+  ) {
+    if (!isDecimalInput(value)) {
+      return
+    }
+
+    setHoldingInputValue(holding.id, field, value)
+
+    if (value === '' || value === '.') {
+      return
+    }
+
+    const parsedValue = parseDecimalInput(value)
+
+    if (field === 'amount') {
+      updateHolding(holding.id, { amount: parsedValue })
+      return
+    }
+
+    if (field === 'shares') {
+      updateHolding(holding.id, {
+        shares: parsedValue,
+        amount: calculateHoldingMarketValue({
+          type: holding.type,
+          shares: parsedValue,
+          currentPrice: holding.currentPrice,
+          fallbackAmount: holding.amount,
+        }),
+      })
+      return
+    }
+
+    if (field === 'currentPrice') {
+      updateHolding(holding.id, {
+        currentPrice: parsedValue,
+        amount: calculateHoldingMarketValue({
+          type: holding.type,
+          shares: holding.shares,
+          currentPrice: parsedValue,
+          fallbackAmount: holding.amount,
+        }),
+      })
+      return
+    }
+
+    if (field === 'expectedAnnualReturn') {
+      updateHolding(holding.id, {
+        expectedAnnualReturn: parsedValue / 100,
+        returnSource: 'manual',
+        assumptionReason:
+          '請手動輸入你對此標的的長期年化報酬率假設。這不是預測，只是你拿來估算投資組合的假設。',
+      })
+      return
+    }
+
+    updateHolding(holding.id, { exposureMultiplier: parsedValue })
+  }
+
+  function commitHoldingDecimalInput(
+    holding: PortfolioHolding,
+    field: HoldingDecimalField,
+  ) {
+    const value = holdingInputValues[holding.id]?.[field]
+
+    if (typeof value !== 'string') {
+      return
+    }
+
+    updateHoldingDecimalInput(holding, field, String(parseDecimalInput(value)))
+    clearHoldingInputValue(holding.id, field)
   }
 
   function updateHoldingType(holding: PortfolioHolding, type: HoldingType) {
@@ -422,15 +575,19 @@ function GoalPage() {
                         <input
                           className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
                           inputMode="decimal"
-                          min="0"
+                          onBlur={() =>
+                            commitHoldingDecimalInput(holding, 'amount')
+                          }
                           onChange={(event) =>
-                            updateHolding(holding.id, {
-                              amount: toSafeNumber(event.target.value),
-                            })
+                            updateHoldingDecimalInput(
+                              holding,
+                              'amount',
+                              event.target.value,
+                            )
                           }
                           step="0.01"
-                          type="number"
-                          value={holding.amount}
+                          type="text"
+                          value={getHoldingInputValue(holding, 'amount')}
                         />
                       </label>
                     ) : (
@@ -442,23 +599,19 @@ function GoalPage() {
                           <input
                             className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
                             inputMode="decimal"
-                            min="0"
-                            onChange={(event) => {
-                              const shares = toSafeNumber(event.target.value)
-
-                              updateHolding(holding.id, {
-                                shares,
-                                amount: calculateHoldingMarketValue({
-                                  type: holding.type,
-                                  shares,
-                                  currentPrice: holding.currentPrice,
-                                  fallbackAmount: holding.amount,
-                                }),
-                              })
-                            }}
+                            onBlur={() =>
+                              commitHoldingDecimalInput(holding, 'shares')
+                            }
+                            onChange={(event) =>
+                              updateHoldingDecimalInput(
+                                holding,
+                                'shares',
+                                event.target.value,
+                              )
+                            }
                             step="0.01"
-                            type="number"
-                            value={holding.shares ?? ''}
+                            type="text"
+                            value={getHoldingInputValue(holding, 'shares')}
                           />
                         </label>
 
@@ -469,25 +622,25 @@ function GoalPage() {
                           <input
                             className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
                             inputMode="decimal"
-                            min="0"
-                            onChange={(event) => {
-                              const currentPrice = toSafeNumber(
+                            onBlur={() =>
+                              commitHoldingDecimalInput(
+                                holding,
+                                'currentPrice',
+                              )
+                            }
+                            onChange={(event) =>
+                              updateHoldingDecimalInput(
+                                holding,
+                                'currentPrice',
                                 event.target.value,
                               )
-
-                              updateHolding(holding.id, {
-                                currentPrice,
-                                amount: calculateHoldingMarketValue({
-                                  type: holding.type,
-                                  shares: holding.shares,
-                                  currentPrice,
-                                  fallbackAmount: holding.amount,
-                                }),
-                              })
-                            }}
+                            }
                             step="0.01"
-                            type="number"
-                            value={holding.currentPrice ?? ''}
+                            type="text"
+                            value={getHoldingInputValue(
+                              holding,
+                              'currentPrice',
+                            )}
                           />
                         </label>
                       </>
@@ -521,19 +674,24 @@ function GoalPage() {
                       <input
                         className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
                         inputMode="decimal"
+                        onBlur={() =>
+                          commitHoldingDecimalInput(
+                            holding,
+                            'expectedAnnualReturn',
+                          )
+                        }
                         onChange={(event) =>
-                          updateHolding(holding.id, {
-                            expectedAnnualReturn:
-                              parsePercentInput(event.target.value) / 100,
-                            returnSource: 'manual',
-                            assumptionReason:
-                              '請手動輸入你對此標的的長期年化報酬率假設。這不是預測，只是你拿來估算投資組合的假設。',
-                          })
+                          updateHoldingDecimalInput(
+                            holding,
+                            'expectedAnnualReturn',
+                            event.target.value,
+                          )
                         }
                         step="0.1"
-                        type="number"
-                        value={formatPercentNumber(
-                          holding.expectedAnnualReturn * 100,
+                        type="text"
+                        value={getHoldingInputValue(
+                          holding,
+                          'expectedAnnualReturn',
                         )}
                       />
                       <span className="text-xs text-slate-500">
@@ -548,18 +706,25 @@ function GoalPage() {
                       <input
                         className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
                         inputMode="decimal"
-                        min="0"
+                        onBlur={() =>
+                          commitHoldingDecimalInput(
+                            holding,
+                            'exposureMultiplier',
+                          )
+                        }
                         onChange={(event) =>
-                          updateHolding(holding.id, {
-                            exposureMultiplier: toSafeNumber(
-                              event.target.value,
-                              5,
-                            ),
-                          })
+                          updateHoldingDecimalInput(
+                            holding,
+                            'exposureMultiplier',
+                            event.target.value,
+                          )
                         }
                         step="0.1"
-                        type="number"
-                        value={holding.exposureMultiplier}
+                        type="text"
+                        value={getHoldingInputValue(
+                          holding,
+                          'exposureMultiplier',
+                        )}
                       />
                     </label>
 
@@ -680,7 +845,7 @@ function GoalPage() {
               Polaris 是本機原型工具，用於投資風險整理、資產目標估算與投資組合假設報酬率顯示。它不提供個股推薦、短線交易訊號、市場預測或保證報酬。
             </p>
             <p className="mt-3 text-xs text-slate-500">
-              Polaris v0.4.5｜Simplified local prototype
+              Polaris v0.4.6｜Simplified local prototype
             </p>
           </section>
         </section>

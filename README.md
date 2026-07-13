@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.4.5
+v0.4.6
 
 ## Live Demo
 
@@ -82,6 +82,8 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Users must enter their own assumptions
 - Holdings form now asks for type before name/code
 - Cash and non-cash input flows are clearer
+- Decimal input support for current price
+- Decimal input support for shares, cash amount, expected return, and exposure multiplier
 - No external market data fetch
 - No AI return estimation
 - Expected return and exposure can be calculated from individual holdings

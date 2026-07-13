@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.6 - Decimal Price Input Fix
+- Fixed current price input so decimals can be entered
+- Improved decimal handling for shares, cash amount, expected return, and exposure multiplier
+- Preserved local market value and portfolio calculations
+
 ## v0.4.5 - Holdings Form Order Polish
 - Moved holding type above name/code in the Settings form
 - Made cash and non-cash input flows clearer

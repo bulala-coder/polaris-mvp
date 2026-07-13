@@ -121,7 +121,8 @@ export function getSimpleMarketRisk(marketRiskLevel: number): {
     return {
       label: '低風險',
       tone: 'low',
-      description: '市場環境相對穩定，可依原計畫投入。',
+      description:
+        '目前市場環境相對穩定，可以依原計畫前進。不需要開香檳，也不用突然改航線。',
     }
   }
 
@@ -129,14 +130,15 @@ export function getSimpleMarketRisk(marketRiskLevel: number): {
     return {
       label: '中風險',
       tone: 'medium',
-      description: '市場風險需要留意，適合維持紀律，不宜過度加碼。',
+      description:
+        '市場有點熱，先別急著衝刺。適合維持紀律，不宜過度加碼。',
     }
   }
 
   return {
     label: '高風險',
     tone: 'high',
-    description: '市場風險偏高，應優先控制曝險與現金安全。',
+    description: '風浪偏大，先顧好船身。控制曝險與現金安全，比追求速度更重要。',
   }
 }
 

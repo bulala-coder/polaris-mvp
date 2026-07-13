@@ -42,12 +42,12 @@ function WelcomePage() {
   const maxExposurePercent = Math.round(goalSettings.maxExposure * 100)
   const exposureGapMessage =
     portfolio.effectiveExposure > suggestedExposure.suggestedExposure
-      ? '目前曝險高於建議曝險，適合暫緩加碼，優先控制風險。'
-      : '目前曝險沒有高於建議曝險，可維持紀律並依計畫投入。'
+      ? '目前曝險比建議值高一些，先別再幫油門加裝渦輪。穩住，比衝快重要。'
+      : '目前曝險還在可控範圍內。照計畫前進，不需要為了市場噪音急轉彎。'
   const dailyReminderByTone = {
-    low: '目前市場風險相對低，重點是依計畫投入，不需要追逐短期行情。',
-    medium: '目前市場風險需要留意，重點是維持投入紀律，避免過度加碼。',
-    high: '目前市場風險偏高，重點是控制曝險、保留現金安全，不要因情緒做大幅調整。',
+    low: '今天的任務不是猜市場，而是照計畫慢慢前進。北極星不催你衝刺，只提醒你別迷路。',
+    medium: '市場有點吵，先把方向盤握穩。今天重點是紀律，不是踩滿油門。',
+    high: '風浪偏大時，先顧好船身。控制曝險和現金安全，比追求速度更重要。',
   }
 
   return (
@@ -106,8 +106,8 @@ function WelcomePage() {
 
             <p className="mt-5 text-base leading-relaxed text-slate-400">
               以目前每月投入 {formatCurrency(goalSettings.monthlyContribution)}
-              估算，距離目標仍需要很長時間。Polaris
-              會把這件事呈現得清楚，但不做誇張承諾。
+              估算，這趟航程還需要耐心。Polaris
+              會把距離標清楚，但不會假裝有捷徑。
             </p>
           </section>
 
@@ -123,7 +123,7 @@ function WelcomePage() {
                 預期年化報酬率：{Math.round(goalSettings.expectedAnnualReturn * 100)}%
               </p>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                這是根據目前資產、每月投入與預期年化報酬率估算，不代表市場預測或保證報酬。
+                {goalEta.helperText}
               </p>
             </section>
 
@@ -142,7 +142,7 @@ function WelcomePage() {
                     </p>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                    這是依你的投資組合與各資產曝險倍數估算出的目前曝險。
+                    這是依你的投資組合與各資產曝險倍數估算出的目前曝險，也就是現在油門踩了多深。
                   </p>
                 </div>
 
@@ -156,7 +156,7 @@ function WelcomePage() {
                     </p>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                    這是你在目標頁設定的長期曝險上限。
+                    這是你在目標頁設定的長期曝險上限，像是你願意接受的最高巡航速度。
                   </p>
                 </div>
 

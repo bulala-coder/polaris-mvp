@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.3.5
+v0.3.6
 
 ## Live Demo
 
@@ -57,6 +57,8 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Simplified market risk display
 - Market risk is shown as Low / Medium / High
 - Internal market risk score remains hidden from the Home page
+- Friendly Chinese copy tone
+- Calm, lightly humorous guidance copy
 - Portfolio can be edited and saved in localStorage
 - Market data can be edited and saved in localStorage
 - User Position can be edited and saved in localStorage

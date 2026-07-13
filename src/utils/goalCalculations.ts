@@ -69,7 +69,7 @@ export function estimateTimeToGoal(goal: GoalSettings) {
         monthsToGoal: null,
         label: '超過 100 年',
         helperText:
-          '這是根據目前資產、每月投入與預期年化報酬率估算的時間。它不是市場預測，也不保證實際報酬。',
+          '這是用目前資產、每月投入與預期年化報酬率做的估算。市場不會乖乖照劇本走，所以它不是預測，也不是保證。',
       }
     }
   }
@@ -89,7 +89,7 @@ export function estimateTimeToGoal(goal: GoalSettings) {
     label,
     helperText:
       goal.expectedAnnualReturn > 0
-        ? '這是根據目前資產、每月投入與預期年化報酬率估算的時間。它不是市場預測，也不保證實際報酬。'
+        ? '這是用目前資產、每月投入與預期年化報酬率做的估算。市場不會乖乖照劇本走，所以它不是預測，也不是保證。'
         : '這是以目前每月投入估算的靜態時間，不包含投資報酬率、通膨或市場波動。',
   }
 }

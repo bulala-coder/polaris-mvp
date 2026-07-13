@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.6 - Friendly Copy Tone
+- Updated Home page copy with a calmer and lightly humorous tone
+- Made market risk descriptions more human-friendly
+- Improved Goal page helper text
+- Kept investment disclaimer and safety boundaries professional
+
 ## v0.3.5 - Market Risk Simplification
 - Simplified Home market risk display to Low / Medium / High
 - Hid detailed market risk score and Level 1–5 from the Home page

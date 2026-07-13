@@ -135,14 +135,13 @@ function GoalPage() {
           </div>
 
           <p className="mt-5 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-            預期年化報酬率只是用來估算達標時間的假設，不代表市場預測或保證報酬。你可以用較保守的數字，例如
+            這只是估算用的假設，不是水晶球。你可以用較保守的數字，例如
             4%～6%。
           </p>
 
           <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-            最高曝險是你願意承受的長期曝險上限，例如 150% 代表最高
-            1.5 倍曝險。Polaris
-            會依市場風險建議目前曝險，但不代表買賣訊號。
+            最高曝險像是你願意踩到多深的油門。150% 代表最高 1.5
+            倍曝險，但不代表每天都要踩到底。
           </p>
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

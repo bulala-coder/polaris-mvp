@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.4 - Clean Default State
+- Removed demo holdings from the default state
+- Set default goal, contribution, allocation, and return assumptions to zero
+- Added empty-state copy for new users
+- Kept existing users' localStorage data intact
+- Made Polaris safer to share without implying a recommended portfolio
+
 ## v0.4.3 - Cash Amount Handling
 - Changed cash holdings to use direct cash amount input
 - Kept shares × current price calculation for non-cash holdings

@@ -2,7 +2,6 @@ import { defaultGoal } from '../data/defaultGoal'
 import type { GoalSettings } from '../types/goal'
 import {
   readFromStorage,
-  removeFromStorage,
   storageKeys,
   writeToStorage,
 } from './storage'
@@ -27,7 +26,7 @@ export function writeGoalSettings(goalSettings: GoalSettings): void {
 }
 
 export function resetGoalSettings(): GoalSettings {
-  removeFromStorage(storageKeys.goalSettings)
+  writeToStorage(storageKeys.goalSettings, defaultGoal)
 
   return { ...defaultGoal }
 }

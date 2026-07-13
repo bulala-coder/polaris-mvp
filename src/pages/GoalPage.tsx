@@ -158,11 +158,13 @@ function createEmptyHolding(): PortfolioHolding {
     id: `holding-${Date.now()}`,
     name: '',
     amount: 0,
-    type: 'other',
-    expectedAnnualReturn: 0.04,
-    exposureMultiplier: 0.5,
+    shares: 0,
+    currentPrice: 0,
+    type: 'stock',
+    expectedAnnualReturn: 0,
+    exposureMultiplier: 1,
     returnSource: 'manual',
-    assumptionReason: '請手動輸入你的長期報酬率假設與曝險倍數。',
+    assumptionReason: '請手動輸入此標的的長期年化報酬率假設。',
   }
 }
 
@@ -357,6 +359,17 @@ function GoalPage() {
             </p>
 
             <div className="mt-4 grid gap-4">
+              {goalSettings.holdings.length === 0 ? (
+                <div className="rounded-lg border border-white/10 bg-slate-950/60 p-5">
+                  <h3 className="text-lg font-semibold text-white">
+                    尚未新增投資標的
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-400">
+                    請新增你的股票、ETF、債券或現金。Polaris
+                    不會預設任何投資組合，因為它不想假裝比你更懂你的錢。
+                  </p>
+                </div>
+              ) : null}
               {goalSettings.holdings.map((holding) => (
                 <article
                   className="rounded-lg border border-white/10 bg-slate-950/60 p-4"
@@ -667,7 +680,7 @@ function GoalPage() {
               Polaris 是本機原型工具，用於投資風險整理、資產目標估算與投資組合假設報酬率顯示。它不提供個股推薦、短線交易訊號、市場預測或保證報酬。
             </p>
             <p className="mt-3 text-xs text-slate-500">
-              Polaris v0.4.3｜Simplified local prototype
+              Polaris v0.4.4｜Simplified local prototype
             </p>
           </section>
         </section>

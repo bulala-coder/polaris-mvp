@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
 import { mockMarketInput } from '../data/mockData'
@@ -98,6 +99,8 @@ function WelcomePage() {
             </p>
           </section>
 
+          {usesHoldings ? (
+            <>
           <section className="rounded-lg border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-black/20 backdrop-blur sm:p-8">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -323,6 +326,27 @@ function WelcomePage() {
               {dailyReminderByTone[simpleMarketRisk.tone]}
             </p>
           </section>
+            </>
+          ) : (
+            <section className="rounded-lg border border-cyan-200/15 bg-cyan-200/[0.06] p-6 shadow-xl shadow-cyan-950/20 backdrop-blur-xl sm:p-8">
+              <p className="text-sm font-medium text-cyan-100">
+                尚未輸入投資組合
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-normal text-white">
+                先到設定頁輸入你的投資標的
+              </h2>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-300">
+                Polaris
+                需要你的標的、股數、目前股價、預期年化報酬率與曝險倍數，才能幫你計算投資組合狀態。空白不是錯，只是計算機還沒吃早餐。
+              </p>
+              <Link
+                className="mt-6 inline-flex rounded-lg border border-cyan-200/30 bg-cyan-200/10 px-5 py-3 text-base font-semibold text-cyan-50 shadow-[0_0_32px_rgba(34,211,238,0.12)] transition hover:border-cyan-100/60 hover:bg-cyan-200/15 focus:outline-none focus:ring-2 focus:ring-cyan-200/70"
+                to="/goal"
+              >
+                前往設定
+              </Link>
+            </section>
+          )}
         </div>
       </PageContainer>
     </AppShell>

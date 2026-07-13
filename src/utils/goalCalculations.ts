@@ -35,7 +35,7 @@ export function estimateTimeToGoal(goal: GoalSettings) {
     return {
       monthsToGoal: 0,
       label: '已達成',
-      helperText: '目前資產已達到或超過目標資產。',
+      helperText: '目前資產已達到或超過目標。可以高興，但別把紀律一起拿去慶祝掉。',
     }
   }
 
@@ -47,7 +47,8 @@ export function estimateTimeToGoal(goal: GoalSettings) {
     return {
       monthsToGoal: null,
       label: '無法估算',
-      helperText: '目前每月投入為 0，無法用固定投入估算達標時間。',
+      helperText:
+        '目前每月投入為 0，北極星暫時算不出抵達時間。船沒有前進時，再好的羅盤也只能陪你看夜景。',
     }
   }
 
@@ -69,7 +70,7 @@ export function estimateTimeToGoal(goal: GoalSettings) {
         monthsToGoal: null,
         label: '超過 100 年',
         helperText:
-          '這是用目前資產、每月投入與預期年化報酬率做的估算。市場不會乖乖照劇本走，所以它不是預測，也不是保證。',
+          '這是估算，不是承諾。如果市場會乖乖照 Excel 表演出，世界上就不需要風險管理了。',
       }
     }
   }
@@ -89,7 +90,7 @@ export function estimateTimeToGoal(goal: GoalSettings) {
     label,
     helperText:
       goal.expectedAnnualReturn > 0
-        ? '這是用目前資產、每月投入與預期年化報酬率做的估算。市場不會乖乖照劇本走，所以它不是預測，也不是保證。'
+        ? '這是估算，不是承諾。如果市場會乖乖照 Excel 表演出，世界上就不需要風險管理了。'
         : '這是以目前每月投入估算的靜態時間，不包含投資報酬率、通膨或市場波動。',
   }
 }

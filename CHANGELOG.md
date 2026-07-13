@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.7 - Buffett-Munger Inspired Copy Tone
+- Updated Home page copy with a calmer, wiser, and more memorable long-term investing tone
+- Made market risk, ETA, and exposure guidance more human-friendly
+- Added lightly witty guidance without market prediction, stock recommendations, or trading signals
+- Kept Settings and disclaimer language professional
+
 ## v0.3.6 - Friendly Copy Tone
 - Updated Home page copy with a calmer and lightly humorous tone
 - Made market risk descriptions more human-friendly

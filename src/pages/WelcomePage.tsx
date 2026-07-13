@@ -42,12 +42,12 @@ function WelcomePage() {
   const maxExposurePercent = Math.round(goalSettings.maxExposure * 100)
   const exposureGapMessage =
     portfolio.effectiveExposure > suggestedExposure.suggestedExposure
-      ? '目前曝險比建議值高一些，先別再幫油門加裝渦輪。穩住，比衝快重要。'
-      : '目前曝險還在可控範圍內。照計畫前進，不需要為了市場噪音急轉彎。'
+      ? '你的曝險比北極星建議高。這不代表你錯了，但代表你最好知道自己為什麼這麼做。投資裡最危險的事之一，是把運氣誤認為能力。'
+      : '目前曝險還在可控範圍內。這通常不是最刺激的狀態，但長期投資本來就不是遊樂園雲霄飛車。'
   const dailyReminderByTone = {
-    low: '今天的任務不是猜市場，而是照計畫慢慢前進。北極星不催你衝刺，只提醒你別迷路。',
-    medium: '市場有點吵，先把方向盤握穩。今天重點是紀律，不是踩滿油門。',
-    high: '風浪偏大時，先顧好船身。控制曝險和現金安全，比追求速度更重要。',
+    low: '今天不用猜市場。把簡單的事穩定做好，通常已經贏過很多聰明但手很癢的人。',
+    medium: '今天適合保持理性。市場吵，不代表你也要跟著吵；價格熱，不代表你的腦袋也要發熱。',
+    high: '今天先保護本金與紀律。投資不是比誰衝得快，而是比誰能少犯幾個會留下疤的錯。',
   }
 
   return (
@@ -105,9 +105,7 @@ function WelcomePage() {
             </div>
 
             <p className="mt-5 text-base leading-relaxed text-slate-400">
-              以目前每月投入 {formatCurrency(goalSettings.monthlyContribution)}
-              估算，這趟航程還需要耐心。Polaris
-              會把距離標清楚，但不會假裝有捷徑。
+              目標還在前方。真正困難的不是知道方向，而是在市場吵鬧時還願意照方向走。
             </p>
           </section>
 
@@ -123,7 +121,8 @@ function WelcomePage() {
                 預期年化報酬率：{Math.round(goalSettings.expectedAnnualReturn * 100)}%
               </p>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                {goalEta.helperText}
+                這是估算，不是承諾。如果市場會乖乖照 Excel
+                表演出，世界上就不需要風險管理了。
               </p>
             </section>
 

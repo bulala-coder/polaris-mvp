@@ -135,13 +135,12 @@ function GoalPage() {
           </div>
 
           <p className="mt-5 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-            這只是估算用的假設，不是水晶球。你可以用較保守的數字，例如
-            4%～6%。
+            這只是估算用假設，不是承諾。保守一點通常比較無聊，但投資裡很多好事本來就很無聊。
           </p>
 
           <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-            最高曝險像是你願意踩到多深的油門。150% 代表最高 1.5
-            倍曝險，但不代表每天都要踩到底。
+            最高曝險是你的油門上限。150% 代表最多 1.5
+            倍曝險，但油門裝得深，不代表每天都該踩到底。
           </p>
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

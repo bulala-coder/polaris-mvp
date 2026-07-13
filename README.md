@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.3.6
+v0.3.7
 
 ## Live Demo
 
@@ -59,6 +59,8 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Internal market risk score remains hidden from the Home page
 - Friendly Chinese copy tone
 - Calm, lightly humorous guidance copy
+- Buffett-Munger inspired Chinese copy tone
+- Calm, rational, lightly witty long-term investing guidance
 - Portfolio can be edited and saved in localStorage
 - Market data can be edited and saved in localStorage
 - User Position can be edited and saved in localStorage

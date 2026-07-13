@@ -70,6 +70,9 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - No 10-year asset projection
 - Decimal allocation input support
 - Quick allocation presets on Goal page
+- Home calculations now use Settings page total assets and allocation as the single source of truth
+- Current exposure is calculated from stock and leveraged stock allocation
+- Portfolio expected return and ETA use normalized allocation
 - Portfolio can be edited and saved in localStorage
 - Market data can be edited and saved in localStorage
 - User Position can be edited and saved in localStorage

@@ -6,6 +6,10 @@
 - Removed the old standalone Settings page from the main app
 - Moved product boundary and disclaimer copy into the Settings page
 - Redirected old /settings route to /goal to avoid 404 after navigation simplification
+- Unified Home page calculations around Settings data as the single source of truth
+- Fixed current total asset mismatch in expected return display
+- Fixed current exposure calculation using stock and leveraged stock allocation
+- Used normalized allocation for expected return and ETA calculations
 
 ## v0.3.9 - Improve Allocation Inputs
 - Improved asset allocation inputs to support decimals

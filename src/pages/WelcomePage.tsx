@@ -1,9 +1,9 @@
 import AppShell from '../components/layout/AppShell'
 import PageContainer from '../components/layout/PageContainer'
-import { mockMarketInput, mockPortfolio } from '../data/mockData'
+import { mockMarketInput } from '../data/mockData'
+import { calculateExposureSummary } from '../utils/exposureCalculations'
 import {
   calculateGoalProgress,
-  calculateSuggestedExposure,
   estimateTimeToGoal,
 } from '../utils/goalCalculations'
 import { readGoalSettings } from '../utils/goalStorage'
@@ -11,7 +11,6 @@ import {
   buildMarketScore,
   getSimpleMarketRisk,
 } from '../utils/marketCalculations'
-import { calculatePortfolioMetrics } from '../utils/portfolioCalculations'
 import { calculatePortfolioExpectedReturn } from '../utils/portfolioReturnCalculations'
 import { readFromStorage, storageKeys } from '../utils/storage'
 
@@ -25,13 +24,8 @@ function formatCurrency(value: number) {
 
 function WelcomePage() {
   const marketInput = readFromStorage(storageKeys.marketInput, mockMarketInput)
-  const portfolioAssets = readFromStorage(
-    storageKeys.portfolioAssets,
-    mockPortfolio.assets,
-  )
   const marketScore = buildMarketScore(marketInput)
   const simpleMarketRisk = getSimpleMarketRisk(marketScore.marketRiskLevel)
-  const portfolio = calculatePortfolioMetrics(portfolioAssets)
   const goalSettings = readGoalSettings()
   const portfolioExpectedReturn = calculatePortfolioExpectedReturn(goalSettings)
   const goalProgress = calculateGoalProgress(goalSettings)
@@ -39,14 +33,12 @@ function WelcomePage() {
     goalSettings,
     portfolioExpectedReturn.expectedAnnualReturn,
   )
-  const suggestedExposure = calculateSuggestedExposure({
+  const exposureSummary = calculateExposureSummary({
+    goal: goalSettings,
     marketRiskLevel: marketScore.marketRiskLevel,
-    maxExposure: goalSettings.maxExposure,
   })
-  const currentExposurePercent = Math.round(portfolio.effectiveExposure * 100)
-  const maxExposurePercent = Math.round(goalSettings.maxExposure * 100)
   const exposureGapMessage =
-    portfolio.effectiveExposure > suggestedExposure.suggestedExposure
+    exposureSummary.currentExposure > exposureSummary.suggestedExposure
       ? '你的曝險比北極星建議高。這不代表你錯了，但代表你最好知道自己為什麼這麼做。投資裡最危險的事之一，是把運氣誤認為能力。'
       : '目前曝險還在可控範圍內。這通常不是最刺激的狀態，但長期投資本來就不是遊樂園雲霄飛車。'
   const dailyReminderByTone = {
@@ -141,7 +133,7 @@ function WelcomePage() {
               <div className="mt-4 grid gap-2 text-sm text-slate-300">
                 <p>
                   目前總資產：
-                  {formatCurrency(portfolio.totalValue)}
+                  {formatCurrency(goalSettings.currentNetWorth)}
                 </p>
                 <p>
                   股票佔比：
@@ -174,10 +166,13 @@ function WelcomePage() {
                 </p>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                這是依你在設定頁填寫的資產佔比，加上 Polaris
-                內建長期假設算出的加權結果。它不是市場預測，也不是保證報酬；如果市場會乖乖照
-                Excel 表演出，世界上就不需要風險管理了。
+                {portfolioExpectedReturn.helperText}
               </p>
+              {portfolioExpectedReturn.wasNormalized ? (
+                <p className="mt-3 rounded-lg border border-amber-200/20 bg-amber-200/10 p-3 text-sm leading-relaxed text-amber-100">
+                  佔比合計不是 100%，已正規化後估算。
+                </p>
+              ) : null}
             </section>
           </div>
 
@@ -193,11 +188,11 @@ function WelcomePage() {
                       目前投資組合曝險
                     </p>
                     <p className="text-2xl font-semibold text-white">
-                      {currentExposurePercent}%
+                      {Math.round(exposureSummary.currentExposurePercent)}%
                     </p>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                    這是依你的投資組合與各資產曝險倍數估算出的目前曝險，也就是現在油門踩了多深。
+                    {exposureSummary.helperText}
                   </p>
                 </div>
 
@@ -207,7 +202,7 @@ function WelcomePage() {
                       最高曝險上限
                     </p>
                     <p className="text-2xl font-semibold text-white">
-                      {maxExposurePercent}%
+                      {Math.round(exposureSummary.maxExposurePercent)}%
                     </p>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-slate-400">
@@ -221,7 +216,7 @@ function WelcomePage() {
                       建議目前曝險
                     </p>
                     <p className="text-2xl font-semibold text-cyan-100">
-                      {suggestedExposure.suggestedExposurePercent}%
+                      {Math.round(exposureSummary.suggestedExposurePercent)}%
                     </p>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-slate-300">
@@ -229,9 +224,6 @@ function WelcomePage() {
                   </p>
                 </div>
               </div>
-              <p className="mt-4 text-base font-semibold text-slate-100">
-                {suggestedExposure.label}
-              </p>
               <p className="mt-3 text-sm leading-relaxed text-slate-400">
                 {exposureGapMessage}
               </p>

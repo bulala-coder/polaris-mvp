@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.4.1
+v0.4.2
 
 ## Live Demo
 
@@ -70,17 +70,14 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - No 10-year asset projection
 - Decimal allocation input support
 - Quick allocation presets on Goal page
-- Holdings-based expected return
-- Local rule-based holding assumption assistant
+- Fully local holdings-based portfolio calculation
+- Manual expected annual return per holding
+- Market value calculated from shares × current price
+- No external market data fetch
+- No AI return estimation
 - Expected return and exposure can be calculated from individual holdings
 - Falls back to allocation-based calculation if holdings are empty
-- Holdings can fetch historical price data
-- Historical annualized return can be calculated from available price history
-- Current market value can be calculated from shares × latest price
-- Falls back to manual/rule-based returns if data fetch fails
-- Holdings list now displays all holdings on Home page
-- Historical data fetch is experimental and may fail due to browser/CORS restrictions
-- Manual price and return inputs remain the reliable fallback
+- Holdings list displays all holdings on Home page
 - Home calculations now use Settings page holdings first, with allocation fallback
 - Current exposure is calculated from holding exposure multipliers when holdings are available
 - Portfolio expected return and ETA use holdings first, or normalized allocation as fallback
@@ -103,6 +100,7 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - No database
 - No brokerage connection
 - No financial API
+- Future market data API support should be introduced as a separate version without changing the current local-first workflow
 
 ## Disclaimer
 

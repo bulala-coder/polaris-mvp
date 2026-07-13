@@ -20,8 +20,8 @@ export const defaultGoal: GoalSettings = {
       type: 'stock',
       expectedAnnualReturn: 0.06,
       exposureMultiplier: 1,
-      returnSource: 'rule_based',
-      assumptionReason: '以股票型 ETF 的長期報酬假設估算。',
+      returnSource: 'manual',
+      assumptionReason: '示範資料使用手動長期報酬率假設。',
     },
     {
       id: 'demo-00631l',
@@ -32,9 +32,8 @@ export const defaultGoal: GoalSettings = {
       type: 'leveraged_stock',
       expectedAnnualReturn: 0.08,
       exposureMultiplier: 2,
-      returnSource: 'rule_based',
-      assumptionReason:
-        '槓桿型股票 ETF 波動較高，以較高但更不穩定的長期假設估算。',
+      returnSource: 'manual',
+      assumptionReason: '示範資料使用手動長期報酬率假設。',
     },
     {
       id: 'demo-00835b',
@@ -45,8 +44,8 @@ export const defaultGoal: GoalSettings = {
       type: 'bond',
       expectedAnnualReturn: 0.03,
       exposureMultiplier: 0,
-      returnSource: 'rule_based',
-      assumptionReason: '以債券型 ETF 的長期報酬假設估算。',
+      returnSource: 'manual',
+      assumptionReason: '示範資料使用手動長期報酬率假設。',
     },
     {
       id: 'demo-cash',
@@ -55,8 +54,8 @@ export const defaultGoal: GoalSettings = {
       type: 'cash',
       expectedAnnualReturn: 0.01,
       exposureMultiplier: 0,
-      returnSource: 'rule_based',
-      assumptionReason: '現金以低報酬、低波動假設估算。',
+      returnSource: 'manual',
+      assumptionReason: '示範資料使用手動長期報酬率假設。',
     },
   ],
 }

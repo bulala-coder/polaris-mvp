@@ -27,18 +27,6 @@ function formatCurrency(value: number) {
   }).format(value)
 }
 
-function getReturnSourceLabel(source?: string) {
-  if (source === 'historical_data') {
-    return '歷史價格'
-  }
-
-  if (source === 'manual') {
-    return '手動'
-  }
-
-  return '本機假設'
-}
-
 function WelcomePage() {
   const marketInput = readFromStorage(storageKeys.marketInput, mockMarketInput)
   const marketScore = buildMarketScore(marketInput)
@@ -208,20 +196,10 @@ function WelcomePage() {
                             </p>
                             <p>權重：{(holding.weight * 100).toFixed(1)}%</p>
                             <p>
-                              預期年化報酬率：
+                              手動預期年化報酬率：
                               {(holding.expectedAnnualReturn * 100).toFixed(1)}%
                             </p>
                             <p>曝險倍數：{holding.exposureMultiplier ?? 0}x</p>
-                            <p>
-                              報酬率來源：
-                              {getReturnSourceLabel(holding.returnSource)}
-                            </p>
-                            {holding.historicalReturnYears ? (
-                              <p>
-                                歷史資料：約{' '}
-                                {holding.historicalReturnYears.toFixed(1)} 年
-                              </p>
-                            ) : null}
                           </div>
                         </div>
                       )
@@ -265,7 +243,7 @@ function WelcomePage() {
               </div>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
                 {usesHoldings
-                  ? '投報率優先使用你抓取的歷史價格年化結果；若沒有歷史資料，則使用手動或本機假設報酬率。這不是預測，也不是保證。'
+                  ? '投報率由你在設定頁手動輸入的各標的預期年化報酬率加權計算。這不是市場預測，也不是保證報酬；Polaris 只負責把假設算清楚，不負責讓市場乖乖聽話。'
                   : portfolioExpectedReturn.helperText}
               </p>
               {'wasNormalized' in portfolioExpectedReturn &&

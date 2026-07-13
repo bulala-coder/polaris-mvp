@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.4.2 - Manual Returns and Local Market Value
+- Removed browser-side historical data fetch from the active UI
+- Made expected annual return fully manual per holding
+- Calculated current market value from shares × current price
+- Updated Home page to use manual holding returns and local market values
+- Removed unused market data fetch utilities
+- Kept Polaris fully local and stable
+
 ## v0.4.1 - Historical Return Data Integration
 - Added market symbol normalization
 - Added Yahoo Finance chart data fetch utility

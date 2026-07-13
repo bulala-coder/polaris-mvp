@@ -17,18 +17,6 @@ export function getHoldingsTotalValue(holdings: PortfolioHolding[]): number {
   )
 }
 
-function getHoldingExpectedAnnualReturn(holding: PortfolioHolding): number {
-  if (
-    holding.returnSource === 'historical_data' &&
-    typeof holding.historicalAnnualReturn === 'number' &&
-    Number.isFinite(holding.historicalAnnualReturn)
-  ) {
-    return holding.historicalAnnualReturn
-  }
-
-  return toPositiveNumber(holding.expectedAnnualReturn)
-}
-
 export function calculateHoldingsExpectedReturn(
   holdings: PortfolioHolding[],
 ) {
@@ -41,7 +29,7 @@ export function calculateHoldingsExpectedReturn(
       expectedAnnualReturnPercent: 0,
       weightedHoldings: [],
       helperText:
-        '這是依你輸入的投資標的金額與各標的長期報酬率假設加權計算而來。它不是市場預測，也不是保證報酬；如果市場會乖乖照 Excel 表演出，世界上就不需要風險管理了。',
+        '這是依你手動輸入的各標的預期年化報酬率與目前市值加權計算而來。它不是市場預測，也不是保證報酬；至少這次我們沒有請水晶球加班。',
     }
   }
 
@@ -50,7 +38,9 @@ export function calculateHoldingsExpectedReturn(
     .filter((holding) => toPositiveNumber(holding.amount) > 0)
     .map((holding) => {
       const amount = toPositiveNumber(holding.amount)
-      const expectedAnnualReturn = getHoldingExpectedAnnualReturn(holding)
+      const expectedAnnualReturn = toPositiveNumber(
+        holding.expectedAnnualReturn,
+      )
       const weight = amount / totalValue
 
       return {
@@ -58,8 +48,6 @@ export function calculateHoldingsExpectedReturn(
         name: holding.name,
         weight,
         expectedAnnualReturn,
-        returnSource: holding.returnSource,
-        historicalReturnYears: holding.historicalReturnYears,
         exposureMultiplier: holding.exposureMultiplier,
         contributionToReturn: weight * expectedAnnualReturn,
       }
@@ -75,7 +63,7 @@ export function calculateHoldingsExpectedReturn(
     expectedAnnualReturnPercent: expectedAnnualReturn * 100,
     weightedHoldings,
     helperText:
-      '這是依你輸入的投資標的金額與各標的長期報酬率假設加權計算而來。它不是市場預測，也不是保證報酬；如果市場會乖乖照 Excel 表演出，世界上就不需要風險管理了。',
+      '這是依你手動輸入的各標的預期年化報酬率與目前市值加權計算而來。它不是市場預測，也不是保證報酬；至少這次我們沒有請水晶球加班。',
   }
 }
 

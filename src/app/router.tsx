@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import GoalPage from '../pages/GoalPage'
 import JournalPage from '../pages/JournalPage'
 import MarketPage from '../pages/MarketPage'
@@ -30,5 +30,13 @@ export const router = createBrowserRouter([
   {
     path: '/journal',
     element: <JournalPage />,
+  },
+  {
+    path: '/settings',
+    element: <Navigate to="/goal" replace />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
   },
 ])

@@ -5,6 +5,7 @@
 - Renamed Goal page to Settings while keeping the /goal route
 - Removed the old standalone Settings page from the main app
 - Moved product boundary and disclaimer copy into the Settings page
+- Redirected old /settings route to /goal to avoid 404 after navigation simplification
 
 ## v0.3.9 - Improve Allocation Inputs
 - Improved asset allocation inputs to support decimals

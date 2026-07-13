@@ -7,6 +7,9 @@
 - Added holdings support for shares, current price, market value, and return source
 - Updated holdings expected return to prefer historical return when available
 - Preserved manual fallback when data fetch fails
+- Displayed all holdings on Home page
+- Improved historical data fetch failure copy
+- Preserved manual fallback when browser-side data fetch fails
 
 ## v0.4.0 - Holdings-Based Expected Return
 - Added holdings input on Settings page

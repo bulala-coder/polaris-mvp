@@ -176,33 +176,54 @@ function WelcomePage() {
                 <p>資料來源：{usesHoldings ? '投資標的明細' : '資產配置佔比'}</p>
                 {usesHoldings ? (
                   holdingsExpectedReturn.weightedHoldings
-                    .slice(0, 4)
                     .map((holding) => {
                       const matchedHolding = goalSettings.holdings.find(
                         (item) => item.id === holding.id,
                       )
+                      const shares = matchedHolding?.shares ?? 0
+                      const currentPrice = matchedHolding?.currentPrice ?? 0
+                      const marketValue = calculateHoldingMarketValue({
+                        shares: matchedHolding?.shares,
+                        currentPrice: matchedHolding?.currentPrice,
+                        fallbackAmount: matchedHolding?.amount,
+                      })
 
                       return (
-                        <p key={holding.id}>
-                          {holding.name || '未命名標的'}：
-                          {formatCurrency(
-                            calculateHoldingMarketValue({
-                              shares: matchedHolding?.shares,
-                              currentPrice: matchedHolding?.currentPrice,
-                              fallbackAmount: matchedHolding?.amount,
-                            }),
-                          )}
-                          ，
-                          權重 {Math.round(holding.weight * 100)}%，預期{' '}
-                          {(holding.expectedAnnualReturn * 100).toFixed(1)}%，曝險{' '}
-                          {holding.exposureMultiplier ?? 0}x，來源{' '}
-                          {getReturnSourceLabel(holding.returnSource)}
-                          {holding.historicalReturnYears
-                            ? `｜約 ${holding.historicalReturnYears.toFixed(
-                                1,
-                              )} 年歷史`
-                            : ''}
-                        </p>
+                        <div
+                          className="rounded-lg border border-white/10 bg-slate-950/60 p-3"
+                          key={holding.id}
+                        >
+                          <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                            <p className="font-semibold text-slate-100">
+                              {holding.name || '未命名標的'}
+                            </p>
+                            <p className="text-slate-100">
+                              {formatCurrency(marketValue)}
+                            </p>
+                          </div>
+                          <div className="mt-2 grid gap-1 text-xs leading-relaxed text-slate-400 sm:grid-cols-2">
+                            <p>
+                              股數 × 價格：{shares > 0 ? shares : '未填'} ×{' '}
+                              {currentPrice > 0 ? currentPrice : '未填'}
+                            </p>
+                            <p>權重：{(holding.weight * 100).toFixed(1)}%</p>
+                            <p>
+                              預期年化報酬率：
+                              {(holding.expectedAnnualReturn * 100).toFixed(1)}%
+                            </p>
+                            <p>曝險倍數：{holding.exposureMultiplier ?? 0}x</p>
+                            <p>
+                              報酬率來源：
+                              {getReturnSourceLabel(holding.returnSource)}
+                            </p>
+                            {holding.historicalReturnYears ? (
+                              <p>
+                                歷史資料：約{' '}
+                                {holding.historicalReturnYears.toFixed(1)} 年
+                              </p>
+                            ) : null}
+                          </div>
+                        </div>
                       )
                     })
                 ) : (
@@ -241,9 +262,6 @@ function WelcomePage() {
                     </p>
                   </>
                 )}
-                {usesHoldings && goalSettings.holdings.length > 4 ? (
-                  <p>另有 {goalSettings.holdings.length - 4} 個標的未列出。</p>
-                ) : null}
               </div>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
                 {usesHoldings

@@ -344,7 +344,7 @@ function GoalPage() {
     } catch {
       updateHolding(holding.id, {
         historicalDataError:
-          '資料抓取失敗，請手動輸入。目前資料來源可能暫時拒絕連線，或代號格式不支援。',
+          '目前無法自動取得資料，可能是資料來源暫時拒絕瀏覽器連線，或代號格式不支援。你仍可以手動輸入價格與報酬率，Polaris 會照樣計算。資料不來，我們就不要假裝它有來。',
       })
     } finally {
       setFetchingHoldingIds((holdingIds) =>
@@ -418,6 +418,9 @@ function GoalPage() {
               輸入你的主要投資標的、持有股數與價格。Polaris
               可以嘗試抓取歷史價格來計算過去年化報酬率；抓不到時仍可手動輸入。歷史報酬不是未來保證，市場不是
               Netflix，不一定會照上一季劇情演。
+            </p>
+            <p className="mt-3 rounded-lg border border-cyan-200/15 bg-cyan-200/[0.06] p-4 text-sm leading-relaxed text-slate-300">
+              自動抓取目前仍是實驗功能。若資料來源擋住瀏覽器請求，請先手動輸入。未來可改用伺服端資料代理提高穩定性。
             </p>
 
             <div className="mt-4 grid gap-4">

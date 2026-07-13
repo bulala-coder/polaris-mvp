@@ -260,6 +260,20 @@ function GoalPage() {
     })
   }
 
+  function updateHoldingType(holding: PortfolioHolding, type: HoldingType) {
+    const currentMarketValue = calculateHoldingMarketValue({
+      type: holding.type,
+      shares: holding.shares,
+      currentPrice: holding.currentPrice,
+      fallbackAmount: holding.amount,
+    })
+
+    updateHolding(holding.id, {
+      type,
+      amount: type === 'cash' ? currentMarketValue : holding.amount,
+    })
+  }
+
   function addHolding() {
     setGoalSettings({
       ...goalSettings,
@@ -338,8 +352,8 @@ function GoalPage() {
               投資標的｜Holdings
             </h2>
             <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-              輸入你的主要投資標的、持有股數、目前股價、預期年化報酬率與曝險倍數。Polaris
-              不連網、不猜市場，只把你輸入的假設算清楚。市場不一定聽話，但計算機至少要老實。
+              輸入你的主要投資標的、持有股數、目前股價、預期年化報酬率與曝險倍數。現金直接填金額；股票、ETF、債券則用股數
+              × 目前股價計算市值。現金不用假裝自己有股數，它已經夠安靜了。
             </p>
 
             <div className="mt-4 grid gap-4">
@@ -365,56 +379,84 @@ function GoalPage() {
                       />
                     </label>
 
-                    <label className="grid gap-2">
-                      <span className="text-sm font-medium text-slate-400">
-                        持有股數
-                      </span>
-                      <input
-                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
-                        inputMode="decimal"
-                        min="0"
-                        onChange={(event) => {
-                          const shares = toSafeNumber(event.target.value)
+                    {holding.type === 'cash' ? (
+                      <label className="grid gap-2">
+                        <span className="text-sm font-medium text-slate-400">
+                          現金金額
+                        </span>
+                        <input
+                          className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                          inputMode="decimal"
+                          min="0"
+                          onChange={(event) =>
+                            updateHolding(holding.id, {
+                              amount: toSafeNumber(event.target.value),
+                            })
+                          }
+                          step="0.01"
+                          type="number"
+                          value={holding.amount}
+                        />
+                      </label>
+                    ) : (
+                      <>
+                        <label className="grid gap-2">
+                          <span className="text-sm font-medium text-slate-400">
+                            持有股數
+                          </span>
+                          <input
+                            className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                            inputMode="decimal"
+                            min="0"
+                            onChange={(event) => {
+                              const shares = toSafeNumber(event.target.value)
 
-                          updateHolding(holding.id, {
-                            shares,
-                            amount: calculateHoldingMarketValue({
-                              shares,
-                              currentPrice: holding.currentPrice,
-                              fallbackAmount: holding.amount,
-                            }),
-                          })
-                        }}
-                        type="number"
-                        value={holding.shares ?? ''}
-                      />
-                    </label>
+                              updateHolding(holding.id, {
+                                shares,
+                                amount: calculateHoldingMarketValue({
+                                  type: holding.type,
+                                  shares,
+                                  currentPrice: holding.currentPrice,
+                                  fallbackAmount: holding.amount,
+                                }),
+                              })
+                            }}
+                            step="0.01"
+                            type="number"
+                            value={holding.shares ?? ''}
+                          />
+                        </label>
 
-                    <label className="grid gap-2">
-                      <span className="text-sm font-medium text-slate-400">
-                        目前價格
-                      </span>
-                      <input
-                        className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
-                        inputMode="decimal"
-                        min="0"
-                        onChange={(event) => {
-                          const currentPrice = toSafeNumber(event.target.value)
+                        <label className="grid gap-2">
+                          <span className="text-sm font-medium text-slate-400">
+                            目前股價
+                          </span>
+                          <input
+                            className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                            inputMode="decimal"
+                            min="0"
+                            onChange={(event) => {
+                              const currentPrice = toSafeNumber(
+                                event.target.value,
+                              )
 
-                          updateHolding(holding.id, {
-                            currentPrice,
-                            amount: calculateHoldingMarketValue({
-                              shares: holding.shares,
-                              currentPrice,
-                              fallbackAmount: holding.amount,
-                            }),
-                          })
-                        }}
-                        step="0.01"
-                        type="number"
-                        value={holding.currentPrice ?? ''}
-                      />
-                    </label>
+                              updateHolding(holding.id, {
+                                currentPrice,
+                                amount: calculateHoldingMarketValue({
+                                  type: holding.type,
+                                  shares: holding.shares,
+                                  currentPrice,
+                                  fallbackAmount: holding.amount,
+                                }),
+                              })
+                            }}
+                            step="0.01"
+                            type="number"
+                            value={holding.currentPrice ?? ''}
+                          />
+                        </label>
+                      </>
+                    )}
 
                     <div className="grid gap-2 rounded-lg border border-white/10 bg-slate-950 p-4">
                       <span className="text-sm font-medium text-slate-400">
@@ -423,6 +465,7 @@ function GoalPage() {
                       <p className="text-xl font-semibold text-white">
                         {formatCurrency(
                           calculateHoldingMarketValue({
+                            type: holding.type,
                             shares: holding.shares,
                             currentPrice: holding.currentPrice,
                             fallbackAmount: holding.amount,
@@ -430,7 +473,9 @@ function GoalPage() {
                         )}
                       </p>
                       <span className="text-xs text-slate-500">
-                        由持有股數 × 目前股價自動計算，不需要連網。
+                        {holding.type === 'cash'
+                          ? '現金直接以金額作為市值，不需要股數或股價。'
+                          : '由持有股數 × 目前股價自動計算，不需要連網。'}
                       </span>
                     </div>
 
@@ -441,9 +486,10 @@ function GoalPage() {
                       <select
                         className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
                         onChange={(event) =>
-                          updateHolding(holding.id, {
-                            type: event.target.value as HoldingType,
-                          })
+                          updateHoldingType(
+                            holding,
+                            event.target.value as HoldingType,
+                          )
                         }
                         value={holding.type}
                       >
@@ -621,7 +667,7 @@ function GoalPage() {
               Polaris 是本機原型工具，用於投資風險整理、資產目標估算與投資組合假設報酬率顯示。它不提供個股推薦、短線交易訊號、市場預測或保證報酬。
             </p>
             <p className="mt-3 text-xs text-slate-500">
-              Polaris v0.4.2｜Simplified local prototype
+              Polaris v0.4.3｜Simplified local prototype
             </p>
           </section>
         </section>

@@ -55,7 +55,7 @@ export const defaultGoal: GoalSettings = {
       expectedAnnualReturn: 0.01,
       exposureMultiplier: 0,
       returnSource: 'manual',
-      assumptionReason: '示範資料使用手動長期報酬率假設。',
+      assumptionReason: '現金直接以金額計算，報酬率由使用者手動設定。',
     },
   ],
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.3 - Cash Amount Handling
+- Changed cash holdings to use direct cash amount input
+- Kept shares × current price calculation for non-cash holdings
+- Updated Home and Settings displays to treat cash differently from securities
+- Preserved fully local manual return workflow
+
 ## v0.4.2 - Manual Returns and Local Market Value
 - Removed browser-side historical data fetch from the active UI
 - Made expected annual return fully manual per holding

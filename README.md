@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.4.2
+v0.4.3
 
 ## Live Demo
 
@@ -73,6 +73,9 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Fully local holdings-based portfolio calculation
 - Manual expected annual return per holding
 - Market value calculated from shares × current price
+- Cash holdings use direct cash amount input
+- Non-cash holdings use shares × current price
+- Fully local manual return workflow preserved
 - No external market data fetch
 - No AI return estimation
 - Expected return and exposure can be calculated from individual holdings

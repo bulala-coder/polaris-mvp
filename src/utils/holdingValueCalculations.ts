@@ -1,4 +1,4 @@
-import type { PortfolioHolding } from '../types/goal'
+import type { HoldingType, PortfolioHolding } from '../types/goal'
 
 function toSafeNumber(value: number | undefined): number {
   if (typeof value !== 'number' || !Number.isFinite(value) || Number.isNaN(value)) {
@@ -9,14 +9,20 @@ function toSafeNumber(value: number | undefined): number {
 }
 
 export function calculateHoldingMarketValue({
+  type,
   shares,
   currentPrice,
   fallbackAmount,
 }: {
+  type?: HoldingType
   shares?: number
   currentPrice?: number
   fallbackAmount?: number
 }): number {
+  if (type === 'cash') {
+    return toSafeNumber(fallbackAmount)
+  }
+
   const hasValidShares =
     typeof shares === 'number' && Number.isFinite(shares) && shares > 0
   const hasValidCurrentPrice =
@@ -37,6 +43,7 @@ export function normalizeHoldingValue(
   return {
     ...holding,
     amount: calculateHoldingMarketValue({
+      type: holding.type,
       shares: holding.shares,
       currentPrice: holding.currentPrice,
       fallbackAmount: holding.amount,

@@ -171,6 +171,7 @@ function WelcomePage() {
                       const shares = matchedHolding?.shares ?? 0
                       const currentPrice = matchedHolding?.currentPrice ?? 0
                       const marketValue = calculateHoldingMarketValue({
+                        type: matchedHolding?.type,
                         shares: matchedHolding?.shares,
                         currentPrice: matchedHolding?.currentPrice,
                         fallbackAmount: matchedHolding?.amount,
@@ -190,10 +191,15 @@ function WelcomePage() {
                             </p>
                           </div>
                           <div className="mt-2 grid gap-1 text-xs leading-relaxed text-slate-400 sm:grid-cols-2">
-                            <p>
-                              股數 × 價格：{shares > 0 ? shares : '未填'} ×{' '}
-                              {currentPrice > 0 ? currentPrice : '未填'}
-                            </p>
+                            {matchedHolding?.type === 'cash' ? (
+                              <p>現金金額 / 市值：{formatCurrency(marketValue)}</p>
+                            ) : (
+                              <p>
+                                股數 × 目前股價：
+                                {shares > 0 ? shares : '未填'} ×{' '}
+                                {currentPrice > 0 ? currentPrice : '未填'}
+                              </p>
+                            )}
                             <p>權重：{(holding.weight * 100).toFixed(1)}%</p>
                             <p>
                               手動預期年化報酬率：

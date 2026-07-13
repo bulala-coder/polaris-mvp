@@ -2,7 +2,7 @@
 
 ## Current Version
 
-v0.3.4
+v0.3.5
 
 ## Live Demo
 
@@ -54,6 +54,9 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Goal ETA based on monthly contribution and expected annual return
 - Current portfolio exposure display
 - Clear exposure guide: current exposure, max exposure, suggested exposure
+- Simplified market risk display
+- Market risk is shown as Low / Medium / High
+- Internal market risk score remains hidden from the Home page
 - Portfolio can be edited and saved in localStorage
 - Market data can be edited and saved in localStorage
 - User Position can be edited and saved in localStorage

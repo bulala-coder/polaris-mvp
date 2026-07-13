@@ -112,6 +112,34 @@ export function getMarketRiskLabel(level: MarketRiskLevel) {
   return marketRiskLabels[level]
 }
 
+export function getSimpleMarketRisk(marketRiskLevel: number): {
+  label: string
+  tone: 'low' | 'medium' | 'high'
+  description: string
+} {
+  if (marketRiskLevel <= 2) {
+    return {
+      label: '低風險',
+      tone: 'low',
+      description: '市場環境相對穩定，可依原計畫投入。',
+    }
+  }
+
+  if (marketRiskLevel === 3) {
+    return {
+      label: '中風險',
+      tone: 'medium',
+      description: '市場風險需要留意，適合維持紀律，不宜過度加碼。',
+    }
+  }
+
+  return {
+    label: '高風險',
+    tone: 'high',
+    description: '市場風險偏高，應優先控制曝險與現金安全。',
+  }
+}
+
 export function buildMarketScore(input: MarketInput): MarketScore {
   const categoryScores = buildCategoryScores(input)
   const marketRiskScore = calculateMarketRiskScore(input)

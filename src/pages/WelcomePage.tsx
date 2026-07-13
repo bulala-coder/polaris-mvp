@@ -7,7 +7,10 @@ import {
   estimateTimeToGoal,
 } from '../utils/goalCalculations'
 import { readGoalSettings } from '../utils/goalStorage'
-import { buildMarketScore } from '../utils/marketCalculations'
+import {
+  buildMarketScore,
+  getSimpleMarketRisk,
+} from '../utils/marketCalculations'
 import { calculatePortfolioMetrics } from '../utils/portfolioCalculations'
 import { readFromStorage, storageKeys } from '../utils/storage'
 
@@ -26,6 +29,7 @@ function WelcomePage() {
     mockPortfolio.assets,
   )
   const marketScore = buildMarketScore(marketInput)
+  const simpleMarketRisk = getSimpleMarketRisk(marketScore.marketRiskLevel)
   const portfolio = calculatePortfolioMetrics(portfolioAssets)
   const goalSettings = readGoalSettings()
   const goalProgress = calculateGoalProgress(goalSettings)
@@ -40,6 +44,11 @@ function WelcomePage() {
     portfolio.effectiveExposure > suggestedExposure.suggestedExposure
       ? '目前曝險高於建議曝險，適合暫緩加碼，優先控制風險。'
       : '目前曝險沒有高於建議曝險，可維持紀律並依計畫投入。'
+  const dailyReminderByTone = {
+    low: '目前市場風險相對低，重點是依計畫投入，不需要追逐短期行情。',
+    medium: '目前市場風險需要留意，重點是維持投入紀律，避免過度加碼。',
+    high: '目前市場風險偏高，重點是控制曝險、保留現金安全，不要因情緒做大幅調整。',
+  }
 
   return (
     <AppShell>
@@ -61,26 +70,11 @@ function WelcomePage() {
             <p className="text-sm font-medium text-slate-400">
               市場風險
             </p>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div>
-                <p className="text-3xl font-semibold text-cyan-100">
-                  Level {marketScore.marketRiskLevel}｜{marketScore.marketRiskLabel}
-                </p>
-                <p className="mt-2 text-sm text-slate-400">
-                  市場風險等級
-                </p>
-              </div>
-              <div>
-                <p className="text-3xl font-semibold text-white">
-                  {marketScore.marketRiskScore.toFixed(1)}
-                </p>
-                <p className="mt-2 text-sm text-slate-400">
-                  市場風險分數
-                </p>
-              </div>
-            </div>
+            <p className="mt-4 text-5xl font-semibold text-cyan-100 sm:text-6xl">
+              {simpleMarketRisk.label}
+            </p>
             <p className="mt-5 border-t border-white/10 pt-5 text-base leading-relaxed text-slate-300">
-              目前市場風險偏高，適合維持紀律，不適合因短期情緒大幅加碼。
+              {simpleMarketRisk.description}
             </p>
           </section>
 
@@ -176,7 +170,7 @@ function WelcomePage() {
                     </p>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                    這是根據市場風險等級與最高曝險上限計算出的風險控管參考。
+                    建議目前曝險是根據市場風險狀態與你的最高曝險上限計算，用於風險控管，不是市場預測或買賣訊號。
                   </p>
                 </div>
               </div>
@@ -194,7 +188,7 @@ function WelcomePage() {
               今日提醒
             </p>
             <p className="mt-3 text-xl font-semibold leading-relaxed text-white">
-              目前重點不是追逐短期市場，而是讓曝險維持在可承受範圍內，並持續朝資產目標前進。
+              {dailyReminderByTone[simpleMarketRisk.tone]}
             </p>
           </section>
         </div>

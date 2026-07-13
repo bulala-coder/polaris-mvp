@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.5 - Market Risk Simplification
+- Simplified Home market risk display to Low / Medium / High
+- Hid detailed market risk score and Level 1–5 from the Home page
+- Kept internal market risk calculation for suggested exposure
+- Updated daily reminder wording based on simplified market risk state
+
 ## v0.3.4 - Goal Return Rate and Exposure Clarity
 - Added expected annual return setting to Goal page
 - Updated goal ETA calculation to use monthly contribution and expected annual return

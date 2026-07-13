@@ -61,9 +61,10 @@ Polaris does not predict the market. It helps users make calmer, more consistent
 - Calm, lightly humorous guidance copy
 - Buffett-Munger inspired Chinese copy tone
 - Calm, rational, lightly witty long-term investing guidance
-- 10-year projection using overall portfolio expected annual return
-- Projection uses total portfolio value, monthly contribution, and expected annual return
-- No per-asset return assumptions
+- Portfolio expected annual return based on asset allocation
+- Goal page supports stock, leveraged stock, bond, and cash allocation
+- Expected return is calculated from allocation and built-in long-term assumptions
+- No 10-year asset projection
 - Portfolio can be edited and saved in localStorage
 - Market data can be edited and saved in localStorage
 - User Position can be edited and saved in localStorage

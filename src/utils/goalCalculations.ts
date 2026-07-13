@@ -28,8 +28,15 @@ export function calculateGoalProgress(goal: GoalSettings) {
   }
 }
 
-export function estimateTimeToGoal(goal: GoalSettings) {
+export function estimateTimeToGoal(
+  goal: GoalSettings,
+  expectedAnnualReturnOverride?: number,
+) {
   const remainingAmount = goal.targetNetWorth - goal.currentNetWorth
+  const expectedAnnualReturn =
+    typeof expectedAnnualReturnOverride === 'number'
+      ? expectedAnnualReturnOverride
+      : goal.expectedAnnualReturn || 0
 
   if (remainingAmount <= 0) {
     return {
@@ -41,7 +48,7 @@ export function estimateTimeToGoal(goal: GoalSettings) {
 
   if (
     goal.monthlyContribution <= 0 &&
-    goal.expectedAnnualReturn <= 0 &&
+    expectedAnnualReturn <= 0 &&
     remainingAmount > 0
   ) {
     return {
@@ -54,8 +61,8 @@ export function estimateTimeToGoal(goal: GoalSettings) {
 
   let monthsToGoal = Math.ceil(remainingAmount / goal.monthlyContribution)
 
-  if (goal.expectedAnnualReturn > 0) {
-    const monthlyReturn = Math.pow(1 + goal.expectedAnnualReturn, 1 / 12) - 1
+  if (expectedAnnualReturn > 0) {
+    const monthlyReturn = Math.pow(1 + expectedAnnualReturn, 1 / 12) - 1
     let projectedNetWorth = goal.currentNetWorth
     monthsToGoal = 0
 
@@ -89,7 +96,7 @@ export function estimateTimeToGoal(goal: GoalSettings) {
     monthsToGoal,
     label,
     helperText:
-      goal.expectedAnnualReturn > 0
+      expectedAnnualReturn > 0
         ? '這是估算，不是承諾。如果市場會乖乖照 Excel 表演出，世界上就不需要風險管理了。'
         : '這是以目前每月投入估算的靜態時間，不包含投資報酬率、通膨或市場波動。',
   }

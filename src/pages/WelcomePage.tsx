@@ -12,7 +12,7 @@ import {
   getSimpleMarketRisk,
 } from '../utils/marketCalculations'
 import { calculatePortfolioMetrics } from '../utils/portfolioCalculations'
-import { calculateTenYearProjection } from '../utils/projectionCalculations'
+import { calculatePortfolioExpectedReturn } from '../utils/portfolioReturnCalculations'
 import { readFromStorage, storageKeys } from '../utils/storage'
 
 function formatCurrency(value: number) {
@@ -33,16 +33,15 @@ function WelcomePage() {
   const simpleMarketRisk = getSimpleMarketRisk(marketScore.marketRiskLevel)
   const portfolio = calculatePortfolioMetrics(portfolioAssets)
   const goalSettings = readGoalSettings()
+  const portfolioExpectedReturn = calculatePortfolioExpectedReturn(goalSettings)
   const goalProgress = calculateGoalProgress(goalSettings)
-  const goalEta = estimateTimeToGoal(goalSettings)
+  const goalEta = estimateTimeToGoal(
+    goalSettings,
+    portfolioExpectedReturn.expectedAnnualReturn,
+  )
   const suggestedExposure = calculateSuggestedExposure({
     marketRiskLevel: marketScore.marketRiskLevel,
     maxExposure: goalSettings.maxExposure,
-  })
-  const tenYearProjection = calculateTenYearProjection({
-    startingValue: portfolio.totalValue,
-    monthlyContribution: goalSettings.monthlyContribution,
-    expectedAnnualReturn: goalSettings.expectedAnnualReturn,
   })
   const currentExposurePercent = Math.round(portfolio.effectiveExposure * 100)
   const maxExposurePercent = Math.round(goalSettings.maxExposure * 100)
@@ -124,7 +123,7 @@ function WelcomePage() {
                 {goalEta.label}
               </p>
               <p className="mt-3 text-sm font-medium text-cyan-100">
-                預期年化報酬率：{Math.round(goalSettings.expectedAnnualReturn * 100)}%
+                預期達標時間使用上方投資組合預期年化報酬率估算。
               </p>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
                 這是估算，不是承諾。如果市場會乖乖照 Excel
@@ -134,35 +133,50 @@ function WelcomePage() {
 
             <section className="rounded-lg border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-black/20 backdrop-blur">
               <p className="text-sm font-medium text-slate-400">
-                10 年資產估算｜10-Year Projection
+                投資組合預期年化報酬率｜Expected Return
               </p>
               <p className="mt-3 text-3xl font-semibold text-white">
-                {formatCurrency(tenYearProjection.projectedValue)}
+                約 {portfolioExpectedReturn.expectedAnnualReturnPercent.toFixed(1)}%
               </p>
               <div className="mt-4 grid gap-2 text-sm text-slate-300">
                 <p>
-                  目前投資組合：
-                  {formatCurrency(tenYearProjection.startingValue)}
+                  目前總資產：
+                  {formatCurrency(portfolio.totalValue)}
                 </p>
                 <p>
-                  每月投入：
-                  {formatCurrency(tenYearProjection.monthlyContribution)}
+                  股票佔比：
+                  {Math.round(
+                    portfolioExpectedReturn.normalizedWeights.stockWeight * 100,
+                  )}
+                  %
                 </p>
                 <p>
-                  預期年化報酬率：
-                  {tenYearProjection.annualizedReturnPercent.toFixed(0)}%
+                  槓桿股票佔比：
+                  {Math.round(
+                    portfolioExpectedReturn.normalizedWeights
+                      .leveragedStockWeight * 100,
+                  )}
+                  %
                 </p>
                 <p>
-                  10 年總投入：
-                  {formatCurrency(tenYearProjection.totalContribution)}
+                  債券佔比：
+                  {Math.round(
+                    portfolioExpectedReturn.normalizedWeights.bondWeight * 100,
+                  )}
+                  %
                 </p>
                 <p>
-                  估算投資增益：
-                  {formatCurrency(tenYearProjection.estimatedGain)}
+                  現金佔比：
+                  {Math.round(
+                    portfolioExpectedReturn.normalizedWeights.cashWeight * 100,
+                  )}
+                  %
                 </p>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                {tenYearProjection.helperText}
+                這是依你在目標頁填寫的資產佔比，加上 Polaris
+                內建長期假設算出的加權結果。它不是市場預測，也不是保證報酬；如果市場會乖乖照
+                Excel 表演出，世界上就不需要風險管理了。
               </p>
             </section>
           </div>

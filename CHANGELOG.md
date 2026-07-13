@@ -1,10 +1,11 @@
 # Changelog
 
-## v0.3.8 - 10-Year Simple Projection
-- Added simplified 10-year asset projection
-- Used total portfolio value, monthly contribution, and overall expected annual return
-- Avoided per-asset return assumptions to keep the product simple
-- Displayed projected value, total contribution, and estimated gain on Home page
+## v0.3.8 - Portfolio Expected Return
+- Replaced 10-year asset projection with portfolio expected annual return
+- Added asset allocation inputs for stock, leveraged stock, bond, and cash
+- Calculated expected annual return from allocation and built-in long-term assumptions
+- Used portfolio expected return for goal ETA estimation
+- Kept the product focused on market risk, asset goal distance, expected return, and exposure guidance
 
 ## v0.3.7 - Buffett-Munger Inspired Copy Tone
 - Updated Home page copy with a calmer, wiser, and more memorable long-term investing tone

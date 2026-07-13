@@ -9,6 +9,11 @@ import {
 } from '../utils/goalStorage'
 
 type GoalField = keyof GoalSettings
+type AllocationField =
+  | 'stockWeight'
+  | 'leveragedStockWeight'
+  | 'bondWeight'
+  | 'cashWeight'
 
 const goalFields: Array<{
   key: GoalField
@@ -20,17 +25,23 @@ const goalFields: Array<{
   { key: 'targetNetWorth', label: '目標資產｜Target Net Worth' },
   { key: 'monthlyContribution', label: '每月投入｜Monthly Contribution' },
   {
-    key: 'expectedAnnualReturn',
-    label: '預期年化報酬率｜Expected Annual Return',
-    isPercentInput: true,
-    max: 20,
-  },
-  {
     key: 'maxExposure',
     label: '最高曝險｜Max Exposure',
     isPercentInput: true,
     max: 200,
   },
+]
+const allocationFields: Array<{
+  key: AllocationField
+  label: string
+}> = [
+  { key: 'stockWeight', label: '股票佔比｜Stock Allocation' },
+  {
+    key: 'leveragedStockWeight',
+    label: '槓桿股票佔比｜Leveraged Stock Allocation',
+  },
+  { key: 'bondWeight', label: '債券佔比｜Bond Allocation' },
+  { key: 'cashWeight', label: '現金佔比｜Cash Allocation' },
 ]
 
 function toSafeNumber(value: string, max?: number) {
@@ -54,6 +65,12 @@ function toSafeNumber(value: string, max?: number) {
 function GoalPage() {
   const skipNextStorageWrite = useRef(false)
   const [goalSettings, setGoalSettings] = useState(() => readGoalSettings())
+  const allocationTotal =
+    goalSettings.stockWeight +
+    goalSettings.leveragedStockWeight +
+    goalSettings.bondWeight +
+    goalSettings.cashWeight
+  const allocationTotalPercent = Math.round(allocationTotal * 100)
 
   useEffect(() => {
     if (skipNextStorageWrite.current) {
@@ -134,12 +151,45 @@ function GoalPage() {
             ))}
           </div>
 
-          <p className="mt-5 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-            這只是估算用假設，不是承諾。保守一點通常比較無聊，但投資裡很多好事本來就很無聊。這個數字會同時用於預期達標時間與
-            10 年資產估算。
-          </p>
+          <div className="mt-5">
+            <h2 className="text-xl font-semibold text-white">
+              資產佔比
+            </h2>
+            <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
+              Polaris
+              會根據這些佔比估算目前投資組合的預期年化報酬率。這不是水晶球，只是把資產配置放進一個比較不會講大話的計算機。
+            </p>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              {allocationFields.map((field) => (
+                <label
+                  className="grid gap-2 rounded-lg border border-white/10 bg-slate-950/60 p-4"
+                  key={field.key}
+                >
+                  <span className="text-sm font-medium text-slate-400">
+                    {field.label}
+                  </span>
+                  <input
+                    className="min-h-11 rounded-lg border border-white/10 bg-slate-950 px-3 text-base text-slate-100 outline-none transition focus:border-cyan-200/60"
+                    max="200"
+                    min="0"
+                    onChange={(event) =>
+                      updateGoalField(field.key, event.target.value, true, 200)
+                    }
+                    type="number"
+                    value={Math.round(goalSettings[field.key] * 100)}
+                  />
+                </label>
+              ))}
+            </div>
+            <p className="mt-4 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
+              目前佔比合計：{allocationTotalPercent}%
+              {allocationTotalPercent !== 100
+                ? '。佔比合計不是 100%，Polaris 會先正規化後再估算。放心，計算機不會因為你少填 1% 就翻桌。'
+                : '。佔比看起來剛好，計算機今天不用深呼吸。'}
+            </p>
+          </div>
 
-          <p className="mt-3 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
+          <p className="mt-5 rounded-lg border border-white/10 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
             最高曝險是你的油門上限。150% 代表最多 1.5
             倍曝險，但油門裝得深，不代表每天都該踩到底。
           </p>

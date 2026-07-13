@@ -4,4 +4,8 @@ export type GoalSettings = {
   monthlyContribution: number
   maxExposure: number
   expectedAnnualReturn: number
+  stockWeight: number
+  leveragedStockWeight: number
+  bondWeight: number
+  cashWeight: number
 }

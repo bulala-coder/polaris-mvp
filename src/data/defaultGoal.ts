@@ -6,4 +6,8 @@ export const defaultGoal: GoalSettings = {
   monthlyContribution: 20000,
   maxExposure: 1.5,
   expectedAnnualReturn: 0.06,
+  stockWeight: 0.4,
+  leveragedStockWeight: 0.4,
+  bondWeight: 0.15,
+  cashWeight: 0.05,
 }
